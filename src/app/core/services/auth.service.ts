@@ -16,7 +16,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost/smartbudget-api/api';
+  private apiUrl = 'http://localhost:8000';
   private currentUserSubject = new BehaviorSubject<any>(this.getCurrentUser());
   public currentUser$ = this.currentUserSubject.asObservable();
   private tokenKey = 'sb_token';
@@ -30,8 +30,12 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password }).pipe(
+    const url = `${this.apiUrl}/auth/login`;
+    console.log('[AuthService] Login attempt to:', url, { email });
+    
+    return this.http.post<LoginResponse>(url, { email, password }).pipe(
       tap(response => {
+        console.log('[AuthService] Login successful:', response);
         if (response.token) {
           localStorage.setItem(this.tokenKey, response.token);
           localStorage.setItem('sb_user', JSON.stringify(response.user));

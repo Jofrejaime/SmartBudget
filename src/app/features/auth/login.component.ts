@@ -20,21 +20,21 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
   ],
   template: `
     <app-auth-container
-      formTitle="Entrar em SmartBudget"
-      formSubtitle="Gerencie suas finanças com confiança"
+      formTitle="Entre na sua conta"
+      formSubtitle="Acesse as suas finanças com segurança e rapidez"
       brandTitle="SmartBudget"
-      brandDescription="Controle as suas finanças com precisão enterprise"
-      testimonialText="Indispensável para o meu dia-a-dia"
+      brandDescription="Organize receitas, despesas e metas num painel simples, bonito e pronto para o dia a dia."
+      testimonialText="Agora consigo acompanhar tudo num único lugar, sem perder tempo."
       testimonialAuthor="Ricardo Silva"
       testimonialRole="CFO @ AngoTech"
       testimonialImage="https://lh3.googleusercontent.com/aida-public/AB6AXuBGPcR_Ay2U7ylOXLjypHCHVsdR-Nj-nQ2pcSr9YYR7SHFBwl_of_rzMti7Ge85SNR3appdeR8_FoFrGdG5cWqkeVtEMlsKZEBAtFdF9jTzkPSB3xYygt-MAb-G2NlxobYK7WUxqMtKTnGKbdbEuApQJwLO2vx9Sy42UIW0RWPstrsqog4Yc13Zy4XsYvroiMgcQ3CUlIlEFZG9kyrHcJ86Bj9gf16POxg9dT2oVtV8Eed4SlXwQRLgHXAM6CiDpWOppR7asKA7dlfq"
     >
       <form (ngSubmit)="onSubmit()" class="auth-form">
         <app-form-input
-          label="Email"
+          label="Email de acesso"
           type="email"
           icon="mail"
-          placeholder="seu@email.com"
+          placeholder="nome@empresa.com"
           [(value)]="email"
           (valueChange)="clearError()"
         ></app-form-input>
@@ -42,7 +42,7 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
         <app-form-input
           label="Palavra-passe"
           type="password"
-          icon="lock"
+          icon="key"
           [showPasswordToggle]="true"
           [(value)]="password"
           (valueChange)="clearError()"
@@ -57,8 +57,9 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
           variant="primary"
           size="md"
           [disabled]="loading"
-          (click)="onSubmit()"
+          type="submit"
         >
+          <span class="material-symbols-outlined">login</span>
           {{ loading ? ('COMMON.LOADING' | translate) : 'Entrar' }}
         </app-button>
       </form>
@@ -77,6 +78,10 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
       flex-direction: column;
       gap: 16px;
       margin-bottom: 24px;
+    }
+
+    app-button .material-symbols-outlined {
+      font-size: 18px;
     }
 
     .auth-error {
@@ -145,10 +150,15 @@ export class LoginComponent {
     this.loading = true;
 
     this.authService.login(this.email, this.password).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
+      next: (response) => {
+        console.log('[LoginComponent] Login successful, navigating to dashboard:', response);
+        this.loading = false;
+        this.router.navigate(['/dashboard']).then((success) => {
+          console.log('[LoginComponent] Navigation result:', success);
+        });
       },
       error: (err) => {
+        console.error('[LoginComponent] Login error:', err);
         this.loading = false;
         this.error = 'Email ou palavra-passe inválidos';
       }

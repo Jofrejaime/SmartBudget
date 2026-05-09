@@ -634,8 +634,3 @@ export class TransactionListComponent implements OnInit {
     }
   }
 }
-
-  ngOnInit(): void {
-    // TODO: Load transactions from API
-  }
-}

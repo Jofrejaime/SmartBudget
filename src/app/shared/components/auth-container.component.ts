@@ -35,38 +35,58 @@ import { CommonModule } from '@angular/common';
 
       <!-- Right Side: Form -->
       <section class="auth-right">
-        <!-- Mobile Header -->
-        <div class="mobile-header">
-          <span class="material-symbols-outlined">account_balance_wallet</span>
-          <span class="mobile-title">SmartBudget</span>
-        </div>
+        <div class="auth-panel">
+          <!-- Mobile Header -->
+          <div class="mobile-header">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+            <span class="mobile-title">SmartBudget</span>
+          </div>
 
-        <div class="form-header">
-          <h2 class="form-title">{{ formTitle }}</h2>
-          <p class="form-subtitle">{{ formSubtitle }}</p>
-        </div>
+          <div class="form-header">
+            <h2 class="form-title">{{ formTitle }}</h2>
+            <p class="form-subtitle">{{ formSubtitle }}</p>
+          </div>
 
-        <ng-content></ng-content>
+          <ng-content></ng-content>
+        </div>
       </section>
     </main>
   `,
   styles: [`
+    :host {
+      display: block;
+      min-height: 100vh;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top left, rgba(5, 150, 105, 0.08), transparent 36%),
+        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.08), transparent 30%),
+        var(--sb-bg);
+      box-sizing: border-box;
+    }
+
     .auth-main {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1240px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 100vh;
+      grid-template-columns: minmax(0, 1.05fr) minmax(380px, 0.95fr);
+      min-height: calc(100vh - 48px);
+      margin: 0 auto;
       background: var(--sb-surface);
-      border-radius: 12px;
+      border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.18);
     }
 
     @media (max-width: 768px) {
       .auth-main {
         grid-template-columns: 1fr;
         min-height: auto;
+        border-radius: 20px;
+      }
+
+      :host {
+        padding: 16px;
       }
     }
 
@@ -75,9 +95,13 @@ import { CommonModule } from '@angular/common';
       display: none;
       flex-direction: column;
       justify-content: space-between;
-      padding: 48px;
-      background: linear-gradient(135deg, #059669 0%, #065F46 100%);
+      padding: 56px;
+      background:
+        linear-gradient(135deg, rgba(5, 150, 105, 0.96) 0%, rgba(6, 95, 70, 0.95) 100%),
+        radial-gradient(circle at top right, rgba(209, 250, 229, 0.16), transparent 34%);
       color: white;
+      position: relative;
+      overflow: hidden;
     }
 
     @media (min-width: 768px) {
@@ -179,14 +203,20 @@ import { CommonModule } from '@angular/common';
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
       padding: 32px;
       background: var(--sb-surface);
     }
 
     @media (min-width: 768px) {
       .auth-right {
-        padding: 48px;
+        padding: 56px 48px;
       }
+    }
+
+    .auth-panel {
+      width: 100%;
+      max-width: 440px;
     }
 
     .mobile-header {

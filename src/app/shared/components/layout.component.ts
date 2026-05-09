@@ -42,6 +42,15 @@ import { LanguageService } from '../../core/services/language.service';
           </a>
 
           <a 
+            routerLink="/categories" 
+            routerLinkActive="active"
+            class="nav-item"
+          >
+            <span class="material-symbols-outlined">category</span>
+            <span>Categorias</span>
+          </a>
+
+          <a 
             routerLink="/settings" 
             routerLinkActive="active"
             class="nav-item"
@@ -91,7 +100,7 @@ import { LanguageService } from '../../core/services/language.service';
             <!-- User Menu -->
             <div class="user-menu">
               <button class="user-btn" (click)="toggleUserMenu()">
-                <span class="avatar">{{ (currentUser$ | async)?.name | slice:0:2 | uppercase }}</span>
+                <span class="avatar">{{ ((currentUser$ | async)?.name || 'User') | uppercase }}</span>
                 <span class="material-symbols-outlined">expand_more</span>
               </button>
 
@@ -434,6 +443,7 @@ export class LayoutComponent implements OnInit {
       
       const titles: { [key: string]: string } = {
         'dashboard': 'Dashboard',
+        'categories': 'Categorias',
         'transactions': 'Transações',
         'create': 'Nova Transação',
         'edit': 'Editar Transação',

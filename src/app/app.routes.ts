@@ -20,6 +20,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
+        path: 'categories',
+        loadComponent: () => import('./features/categories/categories.component').then(m => m.CategoriesComponent)
+      },
+      {
         path: 'transactions',
         children: [
           { path: '', loadComponent: () => import('./features/transactions/list.component').then(m => m.TransactionListComponent) },

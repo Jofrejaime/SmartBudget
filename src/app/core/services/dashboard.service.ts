@@ -16,7 +16,7 @@ export interface DashboardSummary {
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'http://localhost/smartbudget-api/api/dashboard';
+  private apiUrl = 'http://localhost:8000/dashboard/summary';
   private summarySubject = new BehaviorSubject<DashboardSummary | null>(null);
   public summary$ = this.summarySubject.asObservable();
 

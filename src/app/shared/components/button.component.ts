@@ -12,6 +12,7 @@ type Size = 'sm' | 'md' | 'lg';
     <button 
       [ngClass]="['btn', 'btn-' + size, 'btn-' + variant]"
       [disabled]="disabled"
+      [type]="type"
     >
       <ng-content></ng-content>
     </button>
@@ -99,4 +100,5 @@ export class ButtonComponent {
   @Input() variant: Variant = 'primary';
   @Input() size: Size = 'md';
   @Input() disabled = false;
+  @Input() type: 'button' | 'submit' | 'reset' = 'button';
 }
