@@ -1,0 +1,37 @@
+{
+  "COMMON": {
+    "APP_NAME": "SmartBudget",
+    "LOADING": "Loading...",
+    "ERROR": "Error",
+    "SUCCESS": "Success",
+    "CANCEL": "Cancel",
+    "SAVE": "Save",
+    "DELETE": "Delete",
+    "EDIT": "Edit",
+    "CREATE": "Create",
+    "BACK": "Back",
+    "LOGOUT": "Logout"
+  },
+  "AUTH": {
+    "LOGIN": "Login",
+    "REGISTER": "Sign Up",
+    "LOGIN_TITLE": "Login to SmartBudget",
+    "REGISTER_TITLE": "Create Account",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "PASSWORD_CONFIRM": "Confirm Password",
+    "NAME": "Name",
+    "DONT_HAVE_ACCOUNT": "Don't have an account?",
+    "ALREADY_HAVE_ACCOUNT": "Already have an account?",
+    "INVALID_CREDENTIALS": "Invalid email or password"
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "TOTAL_BALANCE": "Total Balance",
+    "THIS_MONTH": "This Month",
+    "INCOME": "Income",
+    "EXPENSES": "Expenses",
+    "BALANCE": "Balance",
+    "RECENT_TRANSACTIONS": "Recent Transactions"
+  }
+}

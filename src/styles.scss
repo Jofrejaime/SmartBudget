@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --sb-bg: #F7F8FA;
+  --sb-surface: #FFFFFF;
+  --sb-surface2: #F0F2F5;
+  --sb-border: rgba(0, 0, 0, 0.07);
+  --sb-border2: rgba(0, 0, 0, 0.12);
+  --sb-text: #0D1117;
+  --sb-text2: #5A6478;
+  --sb-text3: #9BA3B2;
+  
+  --sb-primary: #059669;
+  --sb-primary-mid: #10B981;
+  --sb-primary-light: #D1FAE5;
+  --sb-primary-dark: #065F46;
+  
+  --sb-accent: #F59E0B;
+  --sb-accent-light: #FEF3C7;
+  --sb-accent-dark: #92400E;
+  
+  --sb-danger: #EF4444;
+  --sb-danger-light: #FEE2E2;
+  --sb-danger-dark: #7F1D1D;
+  --sb-income: #10B981;
+  --sb-expense: #EF4444;
+  
+  --sb-font-display: 'Sora', sans-serif;
+  --sb-font-body: 'Inter', sans-serif;
+  
+  --sb-spacing-xs: 4px;
+  --sb-spacing-sm: 8px;
+  --sb-spacing-md: 12px;
+  --sb-spacing-lg: 16px;
+  --sb-spacing-xl: 24px;
+  --sb-spacing-2xl: 32px;
+  --sb-spacing-3xl: 48px;
+  
+  --sb-radius-sm: 6px;
+  --sb-radius-md: 10px;
+  --sb-radius-lg: 16px;
+  --sb-radius-xl: 24px;
+  --sb-radius-pill: 999px;
+}
+
+[data-theme="dark"] {
+  --sb-bg: #0A0F1A;
+  --sb-surface: #131927;
+  --sb-surface2: #1C2535;
+  --sb-border: rgba(255, 255, 255, 0.07);
+  --sb-border2: rgba(255, 255, 255, 0.12);
+  --sb-text: #F0F4FF;
+  --sb-text2: #8B95AA;
+  --sb-text3: #4E596E;
+  --sb-primary-light: rgba(16, 185, 129, 0.12);
+  --sb-accent-light: rgba(245, 158, 11, 0.12);
+  --sb-danger-light: rgba(239, 68, 68, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--sb-bg);
+  color: var(--sb-text);
+  font-family: var(--sb-font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sb-font-display);
+  margin: 0;
+  font-weight: 700;
+}
+
+h1 { font-size: 28px; letter-spacing: -0.5px; }
+h2 { font-size: 22px; letter-spacing: -0.3px; }
+h3 { font-size: 18px; }
+
+a {
+  color: var(--sb-primary);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+a:hover {
+  color: var(--sb-primary-dark);
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--sb-font-body);
+  border: none;
+  transition: all 0.15s;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--sb-primary);
+  outline-offset: 2px;
+}
