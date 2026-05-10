@@ -29,7 +29,7 @@ import { LanguageService } from '../../core/services/language.service';
             class="nav-item"
           >
             <span class="material-symbols-outlined">dashboard</span>
-            <span>Dashboard</span>
+            <span>{{ 'NAV.DASHBOARD' | translate }}</span>
           </a>
 
           <a 
@@ -38,7 +38,7 @@ import { LanguageService } from '../../core/services/language.service';
             class="nav-item"
           >
             <span class="material-symbols-outlined">swap_horiz</span>
-            <span>Transações</span>
+            <span>{{ 'NAV.TRANSACTIONS' | translate }}</span>
           </a>
 
           <a 
@@ -47,7 +47,7 @@ import { LanguageService } from '../../core/services/language.service';
             class="nav-item"
           >
             <span class="material-symbols-outlined">category</span>
-            <span>Categorias</span>
+            <span>{{ 'NAV.CATEGORIES' | translate }}</span>
           </a>
 
           <a 
@@ -56,14 +56,14 @@ import { LanguageService } from '../../core/services/language.service';
             class="nav-item"
           >
             <span class="material-symbols-outlined">settings</span>
-            <span>Configurações</span>
+            <span>{{ 'NAV.SETTINGS' | translate }}</span>
           </a>
         </nav>
 
         <div class="sidebar-footer">
           <button class="nav-item logout-btn" (click)="onLogout()">
             <span class="material-symbols-outlined">logout</span>
-            <span>Sair</span>
+            <span>{{ 'NAV.LOGOUT' | translate }}</span>
           </button>
         </div>
       </aside>
@@ -73,14 +73,14 @@ import { LanguageService } from '../../core/services/language.service';
         <!-- Header -->
         <header class="header">
           <div class="header-left">
-            <h1 class="page-title">{{ pageTitle }}</h1>
+            <h1 class="page-title">{{ pageTitleKey | translate }}</h1>
           </div>
 
           <div class="header-right">
             <button
               class="icon-btn"
               (click)="toggleTheme()"
-              [title]="'Alternar tema'"
+              [title]="'NAV.TOGGLE_THEME' | translate"
             >
               <span class="material-symbols-outlined">
                 {{ (theme$ | async) === 'dark' ? 'light_mode' : 'dark_mode' }}
@@ -90,7 +90,7 @@ import { LanguageService } from '../../core/services/language.service';
             <button
               class="icon-btn"
               (click)="toggleLanguage()"
-              [title]="'Alternar idioma'"
+              [title]="'NAV.TOGGLE_LANGUAGE' | translate"
             >
               <span class="material-symbols-outlined">language</span>
             </button>
@@ -109,11 +109,11 @@ import { LanguageService } from '../../core/services/language.service';
                 <hr />
                 <a routerLink="/settings" class="dropdown-item">
                   <span class="material-symbols-outlined">person</span>
-                  Perfil
+                  {{ 'NAV.PROFILE' | translate }}
                 </a>
                 <button class="dropdown-item logout" (click)="onLogout()">
                   <span class="material-symbols-outlined">logout</span>
-                  Sair
+                  {{ 'NAV.LOGOUT' | translate }}
                 </button>
               </div>
             </div>
@@ -417,7 +417,7 @@ import { LanguageService } from '../../core/services/language.service';
 })
 export class LayoutComponent implements OnInit {
   showUserMenu = false;
-  pageTitle = 'Dashboard';
+  pageTitleKey = 'NAV.DASHBOARD';
   theme$: Observable<string>;
   currentUser$: Observable<any>;
 
@@ -447,15 +447,15 @@ export class LayoutComponent implements OnInit {
     const lastSegment = segments[segments.length - 1] || 'dashboard';
 
     const titles: { [key: string]: string } = {
-      dashboard: 'Dashboard',
-      categories: 'Categorias',
-      transactions: 'Transações',
-      create: 'Nova Transação',
-      edit: 'Editar Transação',
-      settings: 'Configurações'
+      dashboard: 'NAV.DASHBOARD',
+      categories: 'NAV.CATEGORIES',
+      transactions: 'NAV.TRANSACTIONS',
+      create: 'TRANSACTIONS.NEW',
+      edit: 'TRANSACTIONS.EDIT',
+      settings: 'NAV.SETTINGS'
     };
 
-    this.pageTitle = titles[lastSegment] || 'SmartBudget';
+    this.pageTitleKey = titles[lastSegment] || 'COMMON.APP_NAME';
   }
 
   toggleTheme(): void {

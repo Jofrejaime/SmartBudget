@@ -24,46 +24,46 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
   ],
   template: `
     <app-auth-container
-      formTitle="Criar conta"
-      formSubtitle="Comece sua jornada financeira de alto nível"
+      [formTitle]="'AUTH.REGISTER_TITLE' | translate"
+      [formSubtitle]="'AUTH.REGISTER_SUBTITLE' | translate"
       brandTitle="SmartBudget"
-      brandDescription="Controle as suas finanças com precisão enterprise"
-      testimonialText="Indispensável para o meu dia-a-dia"
-      testimonialAuthor="Ricardo Silva"
-      testimonialRole="CFO @ AngoTech"
+      [brandDescription]="'AUTH.BRAND_DESCRIPTION_REGISTER' | translate"
+      [testimonialText]="'AUTH.TESTIMONIAL_TEXT_REGISTER' | translate"
+      [testimonialAuthor]="'AUTH.TESTIMONIAL_AUTHOR' | translate"
+      [testimonialRole]="'AUTH.TESTIMONIAL_ROLE' | translate"
       testimonialImage="https://lh3.googleusercontent.com/aida-public/AB6AXuBGPcR_Ay2U7ylOXLjypHCHVsdR-Nj-nQ2pcSr9YYR7SHFBwl_of_rzMti7Ge85SNR3appdeR8_FoFrGdG5cWqkeVtEMlsKZEBAtFdF9jTzkPSB3xYygt-MAb-G2NlxobYK7WUxqMtKTnGKbdbEuApQJwLO2vx9Sy42UIW0RWPstrsqog4Yc13Zy4XsYvroiMgcQ3CUlIlEFZG9kyrHcJ86Bj9gf16POxg9dT2oVtV8Eed4SlXwQRLgHXAM6CiDpWOppR7asKA7dlfq"
     >
       <form (ngSubmit)="onSubmit()" class="auth-form">
         <app-form-input
-          label="Nome completo"
+          [label]="'AUTH.FULL_NAME' | translate"
           type="text"
           icon="person"
-          placeholder="Ex: João Silva"
+          [placeholder]="'AUTH.FULL_NAME_PLACEHOLDER' | translate"
           [(value)]="name"
           (valueChange)="clearError()"
         ></app-form-input>
 
         <app-form-input
-          label="Endereço de Email"
+          [label]="'AUTH.EMAIL' | translate"
           type="email"
           icon="mail"
-          placeholder="seu@email.com"
+          [placeholder]="'AUTH.EMAIL_PLACEHOLDER_REGISTER' | translate"
           [(value)]="email"
           (valueChange)="clearError()"
         ></app-form-input>
 
         <app-form-input
-          label="Palavra-passe"
+          [label]="'AUTH.PASSWORD' | translate"
           type="password"
           icon="lock"
           [showPasswordToggle]="true"
-          placeholder="Mínimo 6 caracteres"
+          [placeholder]="'AUTH.PASSWORD_MIN' | translate"
           [(value)]="password"
           (valueChange)="clearError()"
         ></app-form-input>
 
         <app-form-input
-          label="Confirmar Palavra-passe"
+          [label]="'AUTH.PASSWORD_CONFIRM' | translate"
           type="password"
           icon="lock"
           [showPasswordToggle]="true"
@@ -72,9 +72,9 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
         ></app-form-input>
 
         <app-checkbox id="terms">
-          Ao registar-me, aceito os
-          <a href="#" class="link-primary">Termos de Serviço</a> e a
-          <a href="#" class="link-primary">Política de Privacidade</a>
+          {{ 'AUTH.TERMS_PREFIX' | translate }}
+          <a href="#" class="link-primary">{{ 'AUTH.TERMS' | translate }}</a> {{ 'AUTH.TERMS_MIDDLE' | translate }}
+          <a href="#" class="link-primary">{{ 'AUTH.PRIVACY_POLICY' | translate }}</a>
         </app-checkbox>
 
         <div class="auth-error" *ngIf="error">
@@ -88,14 +88,14 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
           [disabled]="loading"
           (click)="onSubmit()"
         >
-          {{ loading ? ('COMMON.LOADING' | translate) : 'Criar Minha Conta' }}
+          {{ loading ? ('COMMON.LOADING' | translate) : ('AUTH.CREATE_ACCOUNT' | translate) }}
         </app-button>
       </form>
 
       <div class="auth-footer">
         <p class="auth-link">
-          Já tem conta?
-          <a routerLink="/auth/login" class="link-primary">Faça login</a>
+          {{ 'AUTH.HAVE_ACCOUNT' | translate }}
+          <a routerLink="/auth/login" class="link-primary">{{ 'AUTH.LOGIN_NOW' | translate }}</a>
         </p>
       </div>
     </app-auth-container>

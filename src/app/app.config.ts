@@ -33,7 +33,7 @@ class CustomTranslateLoader implements TranslateLoader {
 
   getTranslation(lang: string): Observable<any> {
     return this.http.get(
-      `./assets/i18n/${lang}.json`
+      `/assets/i18n/${lang}.json`
     );
   }
 }

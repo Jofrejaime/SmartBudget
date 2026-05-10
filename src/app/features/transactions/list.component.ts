@@ -34,10 +34,10 @@ import {
       <div class="transactions-header">
 
         <div>
-          <h1>Transações</h1>
+          <h1>{{ 'TRANSACTIONS.TITLE' | translate }}</h1>
 
           <p class="subtitle">
-            Gerencie seus fluxos financeiros com precisão
+            {{ 'TRANSACTIONS.SUBTITLE' | translate }}
           </p>
         </div>
 
@@ -50,7 +50,7 @@ import {
             add
           </span>
 
-          Nova Transação
+          {{ 'TRANSACTIONS.NEW' | translate }}
         </app-button>
 
       </div>
@@ -60,22 +60,22 @@ import {
 
         <div class="filter-group">
 
-          <label>Tipo</label>
+          <label>{{ 'TRANSACTIONS.FILTER_TYPE' | translate }}</label>
 
           <select
             [(ngModel)]="filterType"
             (ngModelChange)="onFilterChange()"
           >
             <option value="">
-              Todos
+              {{ 'COMMON.ALL' | translate }}
             </option>
 
             <option value="income">
-              Receita
+              {{ 'TRANSACTIONS.INCOME' | translate }}
             </option>
 
             <option value="expense">
-              Despesa
+              {{ 'TRANSACTIONS.EXPENSE' | translate }}
             </option>
 
           </select>
@@ -84,7 +84,7 @@ import {
 
         <div class="filter-group">
 
-          <label>Categoria</label>
+          <label>{{ 'TRANSACTIONS.FILTER_CATEGORY' | translate }}</label>
 
           <select
             [(ngModel)]="filterCategory"
@@ -92,7 +92,7 @@ import {
           >
 
             <option value="">
-              Todas
+              {{ 'COMMON.ALL' | translate }}
             </option>
 
             <option
@@ -108,7 +108,7 @@ import {
 
         <div class="filter-group">
 
-          <label>Data Início</label>
+          <label>{{ 'TRANSACTIONS.FILTER_START_DATE' | translate }}</label>
 
           <input
             type="date"
@@ -120,7 +120,7 @@ import {
 
         <div class="filter-group">
 
-          <label>Data Fim</label>
+          <label>{{ 'TRANSACTIONS.FILTER_END_DATE' | translate }}</label>
 
           <input
             type="date"
@@ -141,7 +141,7 @@ import {
         <div class="stat-box">
 
           <p class="stat-label">
-            Total
+            {{ 'TRANSACTIONS.TOTAL' | translate }}
           </p>
 
           <p class="stat-value">
@@ -153,7 +153,7 @@ import {
         <div class="stat-box income">
 
           <p class="stat-label">
-            Receita
+            {{ 'TRANSACTIONS.INCOME' | translate }}
           </p>
 
           <p class="stat-value">
@@ -165,7 +165,7 @@ import {
         <div class="stat-box expense">
 
           <p class="stat-label">
-            Despesa
+            {{ 'TRANSACTIONS.EXPENSE' | translate }}
           </p>
 
           <p class="stat-value">
@@ -190,11 +190,11 @@ import {
           <thead>
 
             <tr>
-              <th>Data</th>
-              <th>Descrição</th>
-              <th>Categoria</th>
-              <th class="text-right">Valor</th>
-              <th class="text-right">Ações</th>
+              <th>{{ 'TRANSACTIONS.DATE' | translate }}</th>
+              <th>{{ 'TRANSACTIONS.DESCRIPTION' | translate }}</th>
+              <th>{{ 'TRANSACTIONS.CATEGORY' | translate }}</th>
+              <th class="text-right">{{ 'TRANSACTIONS.VALUE' | translate }}</th>
+              <th class="text-right">{{ 'TRANSACTIONS.ACTIONS' | translate }}</th>
             </tr>
 
           </thead>
@@ -277,7 +277,7 @@ import {
                       '/transactions/edit',
                       txn.id
                     ]"
-                    title="Editar"
+                    [title]="'COMMON.EDIT' | translate"
                   >
                     <span class="material-symbols-outlined">
                       edit
@@ -287,7 +287,7 @@ import {
                   <button
                     class="btn-icon danger"
                     (click)="deleteTransaction(txn.id!)"
-                    title="Deletar"
+                    [title]="'COMMON.DELETE' | translate"
                   >
                     <span class="material-symbols-outlined">
                       delete
@@ -315,18 +315,18 @@ import {
           </span>
 
           <h3>
-            Nenhuma transação
+            {{ 'TRANSACTIONS.EMPTY_TITLE' | translate }}
           </h3>
 
           <p>
-            Comece criando sua primeira transação
+            {{ 'TRANSACTIONS.EMPTY_DESC' | translate }}
           </p>
 
           <app-button
             variant="primary"
             routerLink="/transactions/create"
           >
-            Nova Transação
+            {{ 'TRANSACTIONS.NEW' | translate }}
           </app-button>
 
         </div>
@@ -343,8 +343,8 @@ import {
           settings
         </span>
 
-        <p>
-          Carregando transações...
+          <p>
+          {{ 'TRANSACTIONS.LOADING' | translate }}
         </p>
 
       </div>
@@ -366,7 +366,7 @@ import {
         </button>
 
         <span class="page-info">
-          Página {{ currentPage }} de {{ totalPages }}
+          {{ 'TRANSACTIONS.PAGE' | translate }} {{ currentPage }} {{ 'TRANSACTIONS.PAGE_OF' | translate }} {{ totalPages }}
         </span>
 
         <button

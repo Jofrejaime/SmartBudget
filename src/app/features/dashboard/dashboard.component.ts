@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DashboardService } from '../../core/services/dashboard.service';
+import { ExportService } from '../../core/services/export.service';
 import {
   TransactionService,
   Transaction
@@ -28,7 +30,8 @@ interface DashboardSummary {
     CommonModule,
     DecimalPipe,
     DatePipe,
-    RouterLink
+    RouterLink,
+    TranslateModule
   ],
   template: `
     <div class="dashboard-shell">
@@ -36,7 +39,7 @@ interface DashboardSummary {
       <!-- Loading -->
       <div class="loading-badge" *ngIf="isLoading">
         <span class="material-symbols-outlined spin">settings</span>
-        A carregar dashboard...
+        {{ 'DASHBOARD.LOADING' | translate }}
       </div>
 
       <!-- HERO -->
@@ -47,24 +50,37 @@ interface DashboardSummary {
           <div class="hero-topline">
 
             <div>
-              <p class="eyebrow">Resumo financeiro</p>
+              <p class="eyebrow">{{ 'DASHBOARD.EYEBROW' | translate }}</p>
 
               <h2 class="page-title">
-                Dashboard Financeiro
+                {{ 'DASHBOARD.TITLE' | translate }}
               </h2>
 
               <p class="page-subtitle">
-                Controle completo das suas finanças.
+                {{ 'DASHBOARD.SUBTITLE' | translate }}
               </p>
             </div>
 
-            <a
-              routerLink="/transactions/create"
-              class="hero-action"
-            >
-              <span class="material-symbols-outlined">add</span>
-              Nova Transação
-            </a>
+            <div class="hero-actions">
+
+              <a
+                routerLink="/transactions/create"
+                class="hero-action"
+              >
+                <span class="material-symbols-outlined">add</span>
+                {{ 'DASHBOARD.NEW_TRANSACTION' | translate }}
+              </a>
+
+              <button
+                class="hero-export"
+                (click)="exportCsv()"
+                [title]="'DASHBOARD.EXPORT' | translate"
+              >
+                <span class="material-symbols-outlined">download</span>
+                {{ 'DASHBOARD.EXPORT' | translate }}
+              </button>
+
+            </div>
 
           </div>
 
@@ -72,7 +88,7 @@ interface DashboardSummary {
           <div class="balance-block">
 
             <p class="balance-label">
-              Saldo Total
+              {{ 'DASHBOARD.TOTAL_BALANCE' | translate }}
             </p>
 
             <div
@@ -90,7 +106,7 @@ interface DashboardSummary {
                   trending_up
                 </span>
 
-                Receita:
+                {{ 'DASHBOARD.REVENUE_LABEL' | translate }}:
                 {{ summary.total_income | number:'1.2-2' }} Kz
               </div>
 
@@ -99,7 +115,7 @@ interface DashboardSummary {
                   trending_down
                 </span>
 
-                Despesa:
+                {{ 'DASHBOARD.EXPENSE_LABEL' | translate }}:
                 {{ summary.total_expense | number:'1.2-2' }} Kz
               </div>
 
@@ -117,7 +133,7 @@ interface DashboardSummary {
           </span>
 
           <p class="eyebrow light">
-            Resumo Mensal
+            {{ 'DASHBOARD.MONTHLY_SUMMARY' | translate }}
           </p>
 
           <h3>{{ summary.month }}</h3>
@@ -125,7 +141,7 @@ interface DashboardSummary {
           <div class="monthly-metrics">
 
             <div class="metric">
-              <span>Receitas</span>
+              <span>{{ 'DASHBOARD.MONTHLY_INCOME' | translate }}</span>
 
               <strong class="income">
                 {{ summary.monthly_income | number:'1.2-2' }} Kz
@@ -133,7 +149,7 @@ interface DashboardSummary {
             </div>
 
             <div class="metric">
-              <span>Despesas</span>
+              <span>{{ 'DASHBOARD.MONTHLY_EXPENSE' | translate }}</span>
 
               <strong class="expense">
                 {{ summary.monthly_expense | number:'1.2-2' }} Kz
@@ -141,7 +157,7 @@ interface DashboardSummary {
             </div>
 
             <div class="metric">
-              <span>Saldo</span>
+              <span>{{ 'DASHBOARD.MONTHLY_BALANCE' | translate }}</span>
 
               <strong
                 [class.income]="summary.monthly_balance >= 0"
@@ -163,7 +179,7 @@ interface DashboardSummary {
         <article class="stat-card">
 
           <p class="stat-label">
-            Receita Total
+            {{ 'DASHBOARD.REVENUE_TOTAL' | translate }}
           </p>
 
           <div class="stat-value income">
@@ -171,7 +187,7 @@ interface DashboardSummary {
           </div>
 
           <p class="stat-caption">
-            Total de entradas financeiras
+            {{ 'DASHBOARD.REVENUE_TOTAL_DESC' | translate }}
           </p>
 
         </article>
@@ -179,7 +195,7 @@ interface DashboardSummary {
         <article class="stat-card">
 
           <p class="stat-label">
-            Despesa Total
+            {{ 'DASHBOARD.EXPENSE_TOTAL' | translate }}
           </p>
 
           <div class="stat-value expense">
@@ -187,7 +203,7 @@ interface DashboardSummary {
           </div>
 
           <p class="stat-caption">
-            Total de saídas financeiras
+            {{ 'DASHBOARD.EXPENSE_TOTAL_DESC' | translate }}
           </p>
 
         </article>
@@ -195,7 +211,7 @@ interface DashboardSummary {
         <article class="stat-card">
 
           <p class="stat-label">
-            Saldo Mensal
+            {{ 'DASHBOARD.MONTHLY_BALANCE_TOTAL' | translate }}
           </p>
 
           <div
@@ -207,7 +223,7 @@ interface DashboardSummary {
           </div>
 
           <p class="stat-caption">
-            Resultado financeiro do mês atual
+            {{ 'DASHBOARD.MONTHLY_BALANCE_DESC' | translate }}
           </p>
 
         </article>
@@ -220,16 +236,16 @@ interface DashboardSummary {
         <div class="panel-header">
 
           <div>
-            <p class="eyebrow">Movimentos recentes</p>
+            <p class="eyebrow">{{ 'DASHBOARD.RECENT_MOVEMENTS' | translate }}</p>
 
-            <h3>Últimas Transações</h3>
+            <h3>{{ 'DASHBOARD.LATEST_TRANSACTIONS' | translate }}</h3>
           </div>
 
           <a
             routerLink="/transactions"
             class="panel-link"
           >
-            Ver tudo
+            {{ 'DASHBOARD.VIEW_ALL' | translate }}
           </a>
 
         </div>
@@ -243,7 +259,7 @@ interface DashboardSummary {
             receipt_long
           </span>
 
-          <p>Nenhuma transação encontrada.</p>
+          <p>{{ 'DASHBOARD.NO_TRANSACTIONS' | translate }}</p>
         </div>
 
         <!-- TABLE -->
@@ -253,10 +269,10 @@ interface DashboardSummary {
         >
 
           <div class="transactions-head">
-            <span>Data</span>
-            <span>Descrição</span>
-            <span>Tipo</span>
-            <span class="align-right">Valor</span>
+            <span>{{ 'DASHBOARD.DATE' | translate }}</span>
+            <span>{{ 'DASHBOARD.DESCRIPTION' | translate }}</span>
+            <span>{{ 'DASHBOARD.TYPE' | translate }}</span>
+            <span class="align-right">{{ 'DASHBOARD.VALUE' | translate }}</span>
           </div>
 
           <div
@@ -413,15 +429,41 @@ interface DashboardSummary {
     }
 
     .hero-action {
-      display: flex;
+      display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       background: var(--sb-primary);
       color: white;
-      padding: 12px 18px;
-      border-radius: 14px;
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 10px;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .hero-export {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--sb-primary);
+      border: 1px solid var(--sb-primary);
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: flex-end;
     }
 
     .balance-label {
@@ -714,8 +756,18 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardService: DashboardService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private exportService: ExportService
   ) {}
+
+  exportCsv(): void {
+
+    this.exportService.exportDashboardCsv(
+      this.summary,
+      this.recentTransactions
+    );
+
+  }
 
   ngOnInit(): void {
     this.loadDashboard();

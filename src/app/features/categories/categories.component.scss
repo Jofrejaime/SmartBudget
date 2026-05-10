@@ -73,7 +73,8 @@
 .secondary-action {
   border: 0;
   border-radius: 10px;
-  padding: 10px 14px;
+  height: 40px;
+  padding: 0 14px;
   font-size: 13px;
   font-weight: 600;
 }
@@ -327,3 +328,8 @@
     align-items: flex-start;
   }
 }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }

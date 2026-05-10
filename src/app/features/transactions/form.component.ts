@@ -34,16 +34,16 @@ import { ValidationService } from '../../core/services/validation.service';
       <div class="form-header">
         <h1>
           {{ isEditMode
-            ? 'Editar Transação'
-            : 'Nova Transação'
+            ? ('TRANSACTIONS.EDIT' | translate)
+            : ('TRANSACTIONS.NEW' | translate)
           }}
         </h1>
 
         <p class="subtitle">
           {{
             isEditMode
-              ? 'Atualize os detalhes'
-              : 'Registre uma nova entrada ou saída'
+              ? ('TRANSACTIONS.EDIT_SUBTITLE' | translate)
+              : ('TRANSACTIONS.CREATE_SUBTITLE' | translate)
           }}
         </p>
       </div>
@@ -80,7 +80,7 @@ import { ValidationService } from '../../core/services/validation.service';
         <!-- TYPE -->
         <div class="form-section">
 
-          <h3>Tipo de Transação</h3>
+          <h3>{{ 'TRANSACTIONS.TYPE_SECTION' | translate }}</h3>
 
           <div class="type-selector">
 
@@ -94,7 +94,7 @@ import { ValidationService } from '../../core/services/validation.service';
                 trending_up
               </span>
 
-              Receita
+              {{ 'TRANSACTIONS.INCOME' | translate }}
             </button>
 
             <button
@@ -107,7 +107,7 @@ import { ValidationService } from '../../core/services/validation.service';
                 trending_down
               </span>
 
-              Despesa
+              {{ 'TRANSACTIONS.EXPENSE' | translate }}
             </button>
 
           </div>
@@ -116,16 +116,16 @@ import { ValidationService } from '../../core/services/validation.service';
         <!-- BASIC INFO -->
         <div class="form-section">
 
-          <h3>Informações Básicas</h3>
+          <h3>{{ 'TRANSACTIONS.BASIC_INFO' | translate }}</h3>
 
           <div class="form-grid">
 
             <!-- AMOUNT -->
             <app-form-input
-              label="Valor"
+              [label]="'TRANSACTIONS.AMOUNT' | translate"
               type="number"
               icon="payments"
-              placeholder="0,00"
+              [placeholder]="'TRANSACTIONS.AMOUNT_PLACEHOLDER' | translate"
               [(value)]="formData.amount"
               [error]="errors['amount']"
             ></app-form-input>
@@ -133,7 +133,7 @@ import { ValidationService } from '../../core/services/validation.service';
             <!-- CATEGORY -->
             <div class="form-group">
 
-              <label>Categoria</label>
+              <label>{{ 'TRANSACTIONS.CATEGORY' | translate }}</label>
 
               <select
                 [(ngModel)]="formData.category_id"
@@ -141,7 +141,7 @@ import { ValidationService } from '../../core/services/validation.service';
               >
 
                 <option [ngValue]="null">
-                  Selecionar...
+                  {{ 'COMMON.SELECT' | translate }}
                 </option>
 
                 <option
@@ -164,7 +164,7 @@ import { ValidationService } from '../../core/services/validation.service';
 
             <!-- DATE -->
             <app-form-input
-              label="Data"
+              [label]="'TRANSACTIONS.DATE' | translate"
               type="date"
               icon="calendar_today"
               [(value)]="formData.date"
@@ -175,10 +175,10 @@ import { ValidationService } from '../../core/services/validation.service';
 
           <!-- DESCRIPTION -->
           <app-form-input
-            label="Descrição"
+            [label]="'TRANSACTIONS.DESCRIPTION' | translate"
             type="text"
             icon="description"
-            placeholder="Descreva a transação"
+            [placeholder]="'TRANSACTIONS.DESCRIPTION_PLACEHOLDER' | translate"
             [(value)]="formData.description"
             [error]="errors['description']"
           ></app-form-input>
@@ -186,12 +186,12 @@ import { ValidationService } from '../../core/services/validation.service';
           <!-- NOTES -->
           <div class="form-group">
 
-            <label>Notas (Opcional)</label>
+            <label>{{ 'TRANSACTIONS.NOTES' | translate }}</label>
 
             <textarea
               [(ngModel)]="formData.notes"
               name="notes"
-              placeholder="Detalhes adicionais"
+              [placeholder]="'TRANSACTIONS.NOTES_PLACEHOLDER' | translate"
               rows="3"
             ></textarea>
 
@@ -210,7 +210,7 @@ import { ValidationService } from '../../core/services/validation.service';
               close
             </span>
 
-            Cancelar
+            {{ 'COMMON.CANCEL' | translate }}
           </button>
 
           <app-button
@@ -224,14 +224,14 @@ import { ValidationService } from '../../core/services/validation.service';
               {{
                 isEditMode
                   ? 'edit'
-                  : 'add_circle'
+                    : 'add_circle'
               }}
             </span>
 
             {{
               isEditMode
-                ? 'Atualizar'
-                : 'Criar Transação'
+                  ? ('TRANSACTIONS.UPDATE' | translate)
+                  : ('TRANSACTIONS.CREATE' | translate)
             }}
 
           </app-button>

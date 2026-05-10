@@ -22,27 +22,27 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
   ],
   template: `
     <app-auth-container
-      formTitle="Entre na sua conta"
-      formSubtitle="Acesse as suas finanças com segurança e rapidez"
+      [formTitle]="'AUTH.LOGIN_TITLE' | translate"
+      [formSubtitle]="'AUTH.LOGIN_SUBTITLE' | translate"
       brandTitle="SmartBudget"
-      brandDescription="Organize receitas, despesas e metas num painel simples, bonito e pronto para o dia a dia."
-      testimonialText="Agora consigo acompanhar tudo num único lugar, sem perder tempo."
-      testimonialAuthor="Ricardo Silva"
-      testimonialRole="CFO @ AngoTech"
+      [brandDescription]="'AUTH.BRAND_DESCRIPTION' | translate"
+      [testimonialText]="'AUTH.TESTIMONIAL_TEXT' | translate"
+      [testimonialAuthor]="'AUTH.TESTIMONIAL_AUTHOR' | translate"
+      [testimonialRole]="'AUTH.TESTIMONIAL_ROLE' | translate"
       testimonialImage="https://lh3.googleusercontent.com/aida-public/AB6AXuBGPcR_Ay2U7ylOXLjypHCHVsdR-Nj-nQ2pcSr9YYR7SHFBwl_of_rzMti7Ge85SNR3appdeR8_FoFrGdG5cWqkeVtEMlsKZEBAtFdF9jTzkPSB3xYygt-MAb-G2NlxobYK7WUxqMtKTnGKbdbEuApQJwLO2vx9Sy42UIW0RWPstrsqog4Yc13Zy4XsYvroiMgcQ3CUlIlEFZG9kyrHcJ86Bj9gf16POxg9dT2oVtV8Eed4SlXwQRLgHXAM6CiDpWOppR7asKA7dlfq"
     >
       <form (ngSubmit)="onSubmit()" class="auth-form">
         <app-form-input
-          label="Email de acesso"
+          [label]="'AUTH.EMAIL_ACCESS' | translate"
           type="email"
           icon="mail"
-          placeholder="nome@empresa.com"
+          [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate"
           [(value)]="email"
           (valueChange)="clearError()"
         ></app-form-input>
 
         <app-form-input
-          label="Palavra-passe"
+          [label]="'AUTH.PASSWORD' | translate"
           type="password"
           icon="key"
           [showPasswordToggle]="true"
@@ -62,14 +62,14 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
           type="submit"
         >
           <span class="material-symbols-outlined">login</span>
-          {{ loading ? ('COMMON.LOADING' | translate) : 'Entrar' }}
+          {{ loading ? ('COMMON.LOADING' | translate) : ('AUTH.LOGIN' | translate) }}
         </app-button>
       </form>
 
       <div class="auth-footer">
         <p class="auth-link">
-          Não tem conta?
-          <a routerLink="/auth/register" class="link-primary">Crie agora</a>
+          {{ 'AUTH.NO_ACCOUNT' | translate }}
+          <a routerLink="/auth/register" class="link-primary">{{ 'AUTH.CREATE_NOW' | translate }}</a>
         </p>
       </div>
     </app-auth-container>

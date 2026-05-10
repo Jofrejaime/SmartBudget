@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 import {
@@ -12,7 +13,7 @@ import {
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './categories.component.html',
   styleUrls: ['./categories.component.scss']
 })
@@ -32,7 +33,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
   private readonly subscriptions = new Subscription();
 
-  constructor(private categoryService: CategoryService) {}
+  constructor(
+    private categoryService: CategoryService,
+    private translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.add(
@@ -109,7 +113,7 @@ closeCreateModal(): void {
   const description = this.categoryForm.description.trim();
 
   if (!name) {
-    this.formError = 'O nome da categoria é obrigatório';
+      this.formError = this.translate.instant('CATEGORIES.ERROR_NAME_REQUIRED');
     return;
   }
 
@@ -146,14 +150,16 @@ closeCreateModal(): void {
       this.formError =
         error?.error?.message ||
         error?.message ||
-        'Erro ao criar categoria';
+          this.translate.instant('CATEGORIES.ERROR_CREATE');
     }
   });
 }
 
   removeCategory(category: Category): void {
     const confirmed = confirm(
-      `Arquivar categoria "${category.name}"?`
+      this.translate.instant('CATEGORIES.ARCHIVE_CONFIRM', {
+        name: category.name
+      })
     );
 
     if (!confirmed) {
@@ -165,7 +171,7 @@ closeCreateModal(): void {
         const message =
           error?.error?.message ||
           error?.message ||
-          'Erro ao arquivar categoria';
+          this.translate.instant('CATEGORIES.ERROR_ARCHIVE');
 
         alert(message);
       }

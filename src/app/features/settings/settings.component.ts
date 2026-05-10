@@ -7,6 +7,8 @@ import { ThemeService } from '../../core/services/theme.service';
 import { LanguageService } from '../../core/services/language.service';
 import { AuthService } from '../../core/services/auth.service';
 
+import { ProfileModalComponent } from '../../shared/components/profile-modal.component';
+
 @Component({
   selector: 'app-settings',
   standalone: true,
@@ -14,7 +16,8 @@ import { AuthService } from '../../core/services/auth.service';
   imports: [
     CommonModule,
     TranslateModule,
-    FormsModule
+    FormsModule,
+    ProfileModalComponent
   ],
 
   template: `
@@ -22,11 +25,15 @@ import { AuthService } from '../../core/services/auth.service';
 
       <!-- Header -->
       <div class="settings-header">
-        <h1>{{ 'SETTINGS.TITLE' | translate }}</h1>
+
+        <h1>
+          {{ 'SETTINGS.TITLE' | translate }}
+        </h1>
 
         <p class="subtitle">
           {{ 'SETTINGS.SUBTITLE' | translate }}
         </p>
+
       </div>
 
       <!-- Settings Sections -->
@@ -42,11 +49,15 @@ import { AuthService } from '../../core/services/auth.service';
             </span>
 
             <div>
-              <h2>{{ 'SETTINGS.APPEARANCE' | translate }}</h2>
+
+              <h2>
+                {{ 'SETTINGS.APPEARANCE' | translate }}
+              </h2>
 
               <p>
                 {{ 'SETTINGS.APPEARANCE_DESC' | translate }}
               </p>
+
             </div>
 
           </div>
@@ -55,7 +66,9 @@ import { AuthService } from '../../core/services/auth.service';
 
             <div class="item-content">
 
-              <h3>{{ 'SETTINGS.THEME' | translate }}</h3>
+              <h3>
+                {{ 'SETTINGS.THEME' | translate }}
+              </h3>
 
               <p>
                 {{ 'SETTINGS.THEME_DESC' | translate }}
@@ -69,7 +82,7 @@ import { AuthService } from '../../core/services/auth.service';
                 class="toggle-btn"
                 [class.active]="(themeService.theme$ | async) === 'light'"
                 (click)="setTheme('light')"
-                title="{{ 'SETTINGS.THEME_LIGHT' | translate }}"
+                [title]="'SETTINGS.THEME_LIGHT' | translate"
               >
                 <span class="material-symbols-outlined">
                   light_mode
@@ -80,7 +93,7 @@ import { AuthService } from '../../core/services/auth.service';
                 class="toggle-btn"
                 [class.active]="(themeService.theme$ | async) === 'dark'"
                 (click)="setTheme('dark')"
-                title="{{ 'SETTINGS.THEME_DARK' | translate }}"
+                [title]="'SETTINGS.THEME_DARK' | translate"
               >
                 <span class="material-symbols-outlined">
                   dark_mode
@@ -103,11 +116,15 @@ import { AuthService } from '../../core/services/auth.service';
             </span>
 
             <div>
-              <h2>{{ 'SETTINGS.LANGUAGE' | translate }}</h2>
+
+              <h2>
+                {{ 'SETTINGS.LANGUAGE' | translate }}
+              </h2>
 
               <p>
                 {{ 'SETTINGS.LANGUAGE_DESC' | translate }}
               </p>
+
             </div>
 
           </div>
@@ -116,7 +133,9 @@ import { AuthService } from '../../core/services/auth.service';
 
             <div class="item-content">
 
-              <h3>{{ 'SETTINGS.PREFERRED_LANGUAGE' | translate }}</h3>
+              <h3>
+                {{ 'SETTINGS.PREFERRED_LANGUAGE' | translate }}
+              </h3>
 
               <p>
                 {{ 'SETTINGS.PREFERRED_OPTIONS' | translate }}
@@ -160,11 +179,15 @@ import { AuthService } from '../../core/services/auth.service';
             </span>
 
             <div>
-              <h2>{{ 'SETTINGS.ACCOUNT' | translate }}</h2>
+
+              <h2>
+                {{ 'SETTINGS.ACCOUNT' | translate }}
+              </h2>
 
               <p>
                 {{ 'SETTINGS.ACCOUNT_DESC' | translate }}
               </p>
+
             </div>
 
           </div>
@@ -173,7 +196,9 @@ import { AuthService } from '../../core/services/auth.service';
 
             <div class="item-content">
 
-              <h3>{{ 'SETTINGS.PERSONAL_INFO' | translate }}</h3>
+              <h3>
+                {{ 'SETTINGS.PERSONAL_INFO' | translate }}
+              </h3>
 
               <p
                 class="user-info"
@@ -185,7 +210,10 @@ import { AuthService } from '../../core/services/auth.service';
 
             </div>
 
-            <button class="btn-secondary">
+            <button
+              class="btn-secondary"
+              (click)="openProfileModal()"
+            >
 
               <span class="material-symbols-outlined">
                 edit
@@ -204,7 +232,9 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- Footer -->
       <div class="settings-footer">
 
-        <p>SmartBudget v1.0.0</p>
+        <p>
+          SmartBudget v1.0.0
+        </p>
 
         <p>
           © 2026 SmartBudget.
@@ -212,6 +242,12 @@ import { AuthService } from '../../core/services/auth.service';
         </p>
 
       </div>
+
+      <!-- Profile Modal -->
+      <app-profile-modal
+        *ngIf="showProfileModal"
+        (close)="closeProfileModal()"
+      ></app-profile-modal>
 
     </div>
   `,
@@ -248,6 +284,7 @@ import { AuthService } from '../../core/services/auth.service';
 
     .settings-grid {
       display: grid;
+
       grid-template-columns:
         repeat(auto-fit, minmax(350px, 1fr));
 
@@ -558,6 +595,8 @@ export class SettingsComponent {
 
   currentUser$;
 
+  showProfileModal = false;
+
   constructor(
     themeService: ThemeService,
     languageService: LanguageService,
@@ -569,7 +608,7 @@ export class SettingsComponent {
     this.languageService = languageService;
 
     this.currentUser$ =
-      authService.currentUser$;
+      this.authService.currentUser$;
   }
 
   setTheme(theme: string): void {
@@ -584,5 +623,15 @@ export class SettingsComponent {
     this.languageService.setLanguage(
       lang as 'pt' | 'en'
     );
+  }
+
+  openProfileModal(): void {
+
+    this.showProfileModal = true;
+  }
+
+  closeProfileModal(): void {
+
+    this.showProfileModal = false;
   }
 }
