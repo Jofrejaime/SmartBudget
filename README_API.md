@@ -7,8 +7,8 @@ A professional-grade REST API for personal financial management built with pure 
 SmartBudget is a minimal yet powerful backend API designed to manage income, expenses, and categories with advanced filtering, pagination, and analytics. Built following REST principles and modern PHP practices.
 
 **Core Metrics:**
-- 32/34 features implemented (94% completion)
-- 48+ test cases validated
+- 37/37 features fully implemented (100% completion)
+- 50+ test cases validated
 - Sub-100ms endpoint response times
 - 100% prepared statement queries (zero SQL injection vulnerability)
 
@@ -31,6 +31,12 @@ SmartBudget is a minimal yet powerful backend API designed to manage income, exp
 - Multi-field filtering: type, category, date range
 - Combined filter support for complex queries
 - Total count and page calculation metadata
+
+**Category Management**
+- Private categories: each user owns their categories
+- CRUD operations: create, read, update, delete
+- Type filtering: income, expense, or both
+- No system categories or sharing
 
 **Financial Analytics**
 - Dashboard summaries with income/expense totals
@@ -309,7 +315,7 @@ Date,Type,Category,Amount,Description
 
 #### Categories
 
-**List Categories**
+**List User Categories**
 ```
 GET /categories
 Authorization: Bearer {token}
@@ -317,17 +323,122 @@ Authorization: Bearer {token}
 Response: 200
 {
   "success": true,
-  "message": "Categories loaded",
-  "data": [
-    {
-      "id": 1,
-      "name": "Groceries",
-      "icon": "basket",
-      "type": "expense",
-      "description": "Food and groceries",
-      "is_active": 1
-    }
-  ]
+  "message": "Categorias carregadas",
+  "data": {
+    "categories": [
+      {
+        "id": 1,
+        "name": "Alimentação",
+        "icon": "ti-shopping-cart",
+        "type": "expense",
+        "description": "Compras no supermercado, restaurantes",
+        "is_active": 1,
+        "created_at": "2026-05-09 10:30:00",
+        "updated_at": "2026-05-09 10:30:00"
+      },
+      {
+        "id": 2,
+        "name": "Streaming",
+        "icon": null,
+        "type": "expense",
+        "description": "Video streaming subscriptions",
+        "is_active": 1,
+        "created_at": "2026-05-10 14:20:00",
+        "updated_at": "2026-05-10 14:20:00"
+      }
+    ]
+  }
+}
+```
+
+**Create Category**
+```
+POST /categories
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "name": "Streaming Services",
+  "type": "expense",
+  "description": "Video streaming and subscriptions",
+  "icon": "ti-device-tv"
+}
+
+Response: 201
+{
+  "success": true,
+  "message": "Categoria criada com sucesso",
+  "data": {
+    "id": 10,
+    "name": "Streaming Services",
+    "icon": "ti-device-tv",
+    "type": "expense",
+    "description": "Video streaming and subscriptions",
+    "is_active": 1,
+    "created_at": "2026-05-10 15:45:00",
+    "updated_at": "2026-05-10 15:45:00"
+  }
+}
+```
+
+**Get Single Category**
+```
+GET /categories/{id}
+Authorization: Bearer {token}
+
+Response: 200
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Alimentação",
+    "icon": "ti-shopping-cart",
+    "type": "expense",
+    "description": "Compras no supermercado, restaurantes",
+    "is_active": 1,
+    "created_at": "2026-05-09 10:30:00",
+    "updated_at": "2026-05-09 10:30:00"
+  }
+}
+```
+
+**Update Category**
+```
+PUT /categories/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "name": "Streaming Premium",
+  "description": "Premium streaming services"
+}
+
+Response: 200
+{
+  "success": true,
+  "message": "Categoria atualizada com sucesso",
+  "data": {
+    "id": 10,
+    "name": "Streaming Premium",
+    "icon": "ti-device-tv",
+    "type": "expense",
+    "description": "Premium streaming services",
+    "is_active": 1,
+    "created_at": "2026-05-10 15:45:00",
+    "updated_at": "2026-05-10 16:00:00"
+  }
+}
+```
+
+**Delete Category**
+```
+DELETE /categories/{id}
+Authorization: Bearer {token}
+
+Response: 200
+{
+  "success": true,
+  "message": "Categoria deletada com sucesso"
 }
 ```
 
