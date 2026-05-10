@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { Observable, filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { LanguageService } from '../../core/services/language.service';
@@ -77,8 +77,7 @@ import { LanguageService } from '../../core/services/language.service';
           </div>
 
           <div class="header-right">
-            <!-- Theme Toggle -->
-            <button 
+            <button
               class="icon-btn"
               (click)="toggleTheme()"
               [title]="'Alternar tema'"
@@ -88,8 +87,7 @@ import { LanguageService } from '../../core/services/language.service';
               </span>
             </button>
 
-            <!-- Language Toggle -->
-            <button 
+            <button
               class="icon-btn"
               (click)="toggleLanguage()"
               [title]="'Alternar idioma'"
@@ -97,7 +95,6 @@ import { LanguageService } from '../../core/services/language.service';
               <span class="material-symbols-outlined">language</span>
             </button>
 
-            <!-- User Menu -->
             <div class="user-menu">
               <button class="user-btn" (click)="toggleUserMenu()">
                 <span class="avatar">{{ ((currentUser$ | async)?.name || 'User') | uppercase }}</span>
@@ -436,22 +433,29 @@ export class LayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Update page title on navigation
-    this.router.events.subscribe(() => {
-      const segments = this.router.url.split('/');
-      const lastSegment = segments[segments.length - 1] || 'dashboard';
-      
-      const titles: { [key: string]: string } = {
-        'dashboard': 'Dashboard',
-        'categories': 'Categorias',
-        'transactions': 'Transações',
-        'create': 'Nova Transação',
-        'edit': 'Editar Transação',
-        'settings': 'Configurações'
-      };
-      
-      this.pageTitle = titles[lastSegment] || 'SmartBudget';
+    this.updatePageTitle();
+
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updatePageTitle();
     });
+  }
+
+  private updatePageTitle(): void {
+    const segments = this.router.url.split('/');
+    const lastSegment = segments[segments.length - 1] || 'dashboard';
+
+    const titles: { [key: string]: string } = {
+      dashboard: 'Dashboard',
+      categories: 'Categorias',
+      transactions: 'Transações',
+      create: 'Nova Transação',
+      edit: 'Editar Transação',
+      settings: 'Configurações'
+    };
+
+    this.pageTitle = titles[lastSegment] || 'SmartBudget';
   }
 
   toggleTheme(): void {

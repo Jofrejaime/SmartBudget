@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
@@ -12,6 +13,7 @@ import { AuthContainerComponent } from '../../shared/components/auth-container.c
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterLink,
     TranslateModule,
     ButtonComponent,

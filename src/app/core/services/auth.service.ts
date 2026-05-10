@@ -4,11 +4,15 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 export interface LoginResponse {
-  token: string;
-  user: {
-    id: number;
-    name: string;
-    email: string;
+  success: boolean;
+  message: string;
+  data: {
+    token: string;
+    user: {
+      id: number;
+      name: string;
+      email: string;
+    };
   };
 }
 
@@ -36,10 +40,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(url, { email, password }).pipe(
       tap(response => {
         console.log('[AuthService] Login successful:', response);
-        if (response.token) {
-          localStorage.setItem(this.tokenKey, response.token);
-          localStorage.setItem('sb_user', JSON.stringify(response.user));
-          this.currentUserSubject.next(response.user);
+        if (response.data && response.data.token) {
+          localStorage.setItem(this.tokenKey, response.data.token);
+          localStorage.setItem('sb_user', JSON.stringify(response.data.user));
+          this.currentUserSubject.next(response.data.user);
         }
       })
     );

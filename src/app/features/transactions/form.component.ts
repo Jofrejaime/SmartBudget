@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { of, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../shared/components/button.component';
 import { FormInputComponent } from '../../shared/components/form-input.component';
 import { TransactionService, Transaction } from '../../core/services/transaction.service';
@@ -41,7 +42,7 @@ import { ValidationService } from '../../core/services/validation.service';
               type="button"
               class="type-btn"
               [class.active]="formData.type === 'income'"
-              (click)="formData.type = 'income'"
+              (click)="onTypeChange('income')"
             >
               <span class="material-symbols-outlined">trending_up</span>
               Receita
@@ -50,7 +51,7 @@ import { ValidationService } from '../../core/services/validation.service';
               type="button"
               class="type-btn"
               [class.active]="formData.type === 'expense'"
-              (click)="formData.type = 'expense'"
+              (click)="onTypeChange('expense')"
             >
               <span class="material-symbols-outlined">trending_down</span>
               Despesa
@@ -77,10 +78,13 @@ import { ValidationService } from '../../core/services/validation.service';
             <div class="form-group">
               <label>Categoria</label>
               <select [(ngModel)]="formData.category_id" name="category">
-                <option value="">Selecionar...</option>
-                <option *ngFor="let cat of filteredCategories" [value]="cat.id">
-                  {{ cat.name }}
-                </option>
+                <option [ngValue]="null">Selecionar...</option>
+                <optgroup label="Minhas categorias" *ngIf="filteredCategories.length">
+                  <option *ngFor="let cat of filteredCategories" [ngValue]="cat.id">{{ cat.name }}</option>
+                </optgroup>
+                <optgroup label="Outras categorias disponiveis" *ngIf="availableFilteredCategories.length">
+                  <option *ngFor="let cat of availableFilteredCategories" [ngValue]="cat.id">{{ cat.name }}</option>
+                </optgroup>
               </select>
               <span class="error-text" *ngIf="errors['category_id']">{{ errors['category_id'] }}</span>
             </div>
@@ -346,14 +350,16 @@ export class TransactionFormComponent implements OnInit {
     type: 'expense',
     date: new Date().toISOString().split('T')[0],
     amount: 0,
-    category_id: 0,
+    category_id: null,
     description: '',
     notes: ''
   };
 
   errors: { [key: string]: string } = {};
   filteredCategories: Category[] = [];
+  availableFilteredCategories: Category[] = [];
   categories: Category[] = [];
+  availableCategories: Category[] = [];
 
   constructor(
     private transactionService: TransactionService,
@@ -381,6 +387,7 @@ export class TransactionFormComponent implements OnInit {
       next: (response: any) => {
         if (response.success && response.data) {
           this.formData = response.data;
+          this.updateFilteredCategories();
         }
       },
       error: (err) => {
@@ -391,14 +398,40 @@ export class TransactionFormComponent implements OnInit {
   }
 
   loadCategories(): void {
-    this.categories = this.categoryService.getCached();
-    this.updateFilteredCategories();
+    this.categoryService.getAll().subscribe({
+      next: () => {
+        this.categories = this.categoryService.getCached();
+        this.updateFilteredCategories();
+      },
+      error: () => {
+        this.categories = this.categoryService.getCached();
+        this.updateFilteredCategories();
+      }
+    });
+
+    this.categoryService.listAvailable().subscribe({
+      next: () => {
+        this.availableCategories = this.categoryService.getAvailableCached();
+        this.updateFilteredCategories();
+      },
+      error: () => {
+        this.availableCategories = this.categoryService.getAvailableCached();
+        this.updateFilteredCategories();
+      }
+    });
   }
 
   updateFilteredCategories(): void {
-    this.filteredCategories = this.categoryService.getByType(
-      this.formData.type as 'income' | 'expense'
-    );
+    const selectedType = this.formData.type as 'income' | 'expense';
+    const matchesType = (category: Category) => category.type === selectedType || category.type === 'both';
+
+    this.filteredCategories = this.categories.filter(matchesType);
+    this.availableFilteredCategories = this.availableCategories.filter(matchesType);
+  }
+
+  onTypeChange(type: 'income' | 'expense'): void {
+    this.formData.type = type;
+    this.updateFilteredCategories();
   }
 
   validateForm(): boolean {
@@ -430,11 +463,26 @@ export class TransactionFormComponent implements OnInit {
     this.generalError = '';
     this.successMessage = '';
 
-    const submitFn = this.isEditMode
-      ? this.transactionService.update(this.formData.id, this.formData)
-      : this.transactionService.create(this.formData as any);
+    const selectedCategoryId = Number(this.formData.category_id);
+    const selectedIsAvailable = this.availableCategories.some((category) => category.id === selectedCategoryId);
 
-    submitFn.subscribe({
+    const ensureCategoryAccess$ = selectedIsAvailable
+      ? this.categoryService.addToUser(selectedCategoryId).pipe(
+          switchMap(() => {
+            this.categories = this.categoryService.getCached();
+            this.availableCategories = this.categoryService.getAvailableCached();
+            this.updateFilteredCategories();
+            return of(null);
+          })
+        )
+      : of(null);
+
+    ensureCategoryAccess$.pipe(
+      switchMap(() => this.isEditMode
+        ? this.transactionService.update(this.formData.id, this.formData)
+        : this.transactionService.create(this.formData as any)
+      )
+    ).subscribe({
       next: (response: any) => {
         this.successMessage = this.isEditMode
           ? 'Transação atualizada com sucesso!'

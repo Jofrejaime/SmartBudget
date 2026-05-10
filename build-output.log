@@ -1,0 +1,71 @@
+
+> smartbudget-ui@0.0.0 build
+> ng build
+
+[33m❯[39m Building...
+[32m✔[39m Building...
+Application bundle generation failed. [14.992 seconds] - 2026-05-10T14:22:39.816Z
+
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: ButtonComponent is not used within the template of SettingsComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/settings/settings.component.ts:13:56:
+[37m      13 │ ...ts: [CommonModule, TranslateModule, FormsModule, [32mButtonComponent[37m],
+         ╵                                                     [32m~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'activeCategories' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:46:25:
+[37m      46 │               <strong>{{ [32mactiveCategories[37m.length }}</strong>
+         ╵                          [32m~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'expenseCategories' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:50:25:
+[37m      50 │               <strong>{{ [32mexpenseCategories[37m.length }}</strong>
+         ╵                          [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'incomeCategories' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:54:25:
+[37m      54 │               <strong>{{ [32mincomeCategories[37m.length }}</strong>
+         ╵                          [32m~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'topCategory' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:65:17:
+[37m      65 │               {{ [32mtopCategory[37m?.name || 'Sem dados ainda' }} continu...
+         ╵                  [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'totalExpenseAmount' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:155:41:
+[37m      155 │ ...lass="panel-total">{{ [32mtotalExpenseAmount[37m | number:'1.2-2' }} K...
+          ╵                          [32m~~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'topCategory' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:181:25:
+[37m      181 │               <strong>{{ [32mtopCategory[37m?.name || 'N/D' }}</strong>
+          ╵                          [32m~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'expenseCategories' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:185:25:
+[37m      185 │               <strong>{{ [32mexpenseCategories[37m.length >= incomeCatego...
+          ╵                          [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'incomeCategories' does not exist on type 'CategoriesComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/categories/categories.component.ts:185:53:
+[37m      185 │ ...seCategories.length >= [32mincomeCategories[37m.length ? 'Despesa' : '...
+          ╵                           [32m~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
