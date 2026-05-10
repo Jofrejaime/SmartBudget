@@ -34,4 +34,24 @@
     "BALANCE": "Saldo",
     "RECENT_TRANSACTIONS": "Transacções Recentes"
   }
+  ,
+  "SETTINGS": {
+    "TITLE": "Configurações",
+    "SUBTITLE": "Personalize a sua experiência SmartBudget",
+    "APPEARANCE": "Aparência",
+    "APPEARANCE_DESC": "Customize o tema da aplicação",
+    "THEME": "Tema",
+    "THEME_DESC": "Escolha entre tema claro e escuro",
+    "THEME_LIGHT": "Tema claro",
+    "THEME_DARK": "Tema escuro",
+    "LANGUAGE": "Idioma",
+    "LANGUAGE_DESC": "Mude o idioma da aplicação",
+    "PREFERRED_LANGUAGE": "Idioma preferido",
+    "PREFERRED_OPTIONS": "Português ou English",
+    "ACCOUNT": "Conta",
+    "ACCOUNT_DESC": "Gerencie os dados da sua conta",
+    "PERSONAL_INFO": "Informações pessoais",
+    "EDIT": "Editar",
+    "FOOTER": "Todos os direitos reservados"
+  }
 }

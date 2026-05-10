@@ -10,8 +10,14 @@
     "EDIT": "Edit",
     "CREATE": "Create",
     "BACK": "Back",
-    "LOGOUT": "Logout"
+    "LOGOUT": "Logout",
+    "SEARCH": "Search",
+    "FILTER": "Filter",
+    "ACTIONS": "Actions",
+    "YES": "Yes",
+    "NO": "No"
   },
+
   "AUTH": {
     "LOGIN": "Login",
     "REGISTER": "Sign Up",
@@ -25,13 +31,58 @@
     "ALREADY_HAVE_ACCOUNT": "Already have an account?",
     "INVALID_CREDENTIALS": "Invalid email or password"
   },
+
   "DASHBOARD": {
     "TITLE": "Dashboard",
+    "SUBTITLE": "Track your finances in one place",
     "TOTAL_BALANCE": "Total Balance",
     "THIS_MONTH": "This Month",
     "INCOME": "Income",
     "EXPENSES": "Expenses",
     "BALANCE": "Balance",
-    "RECENT_TRANSACTIONS": "Recent Transactions"
+    "RECENT_TRANSACTIONS": "Recent Transactions",
+    "TOP_CATEGORY": "Top Category",
+    "MONTHLY_OVERVIEW": "Monthly Overview"
+  },
+
+  "TRANSACTIONS": {
+    "TITLE": "Transactions",
+    "NEW": "New Transaction",
+    "DESCRIPTION": "Description",
+    "AMOUNT": "Amount",
+    "CATEGORY": "Category",
+    "DATE": "Date",
+    "TYPE": "Type",
+    "INCOME": "Income",
+    "EXPENSE": "Expense",
+    "CREATE_TITLE": "Create Transaction",
+    "EDIT_TITLE": "Edit Transaction",
+    "EMPTY": "No transactions found"
+  },
+
+  "CATEGORIES": {
+    "TITLE": "Categories",
+    "NEW": "New Category",
+    "EMPTY": "No categories available"
+  }
+  ,
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "SUBTITLE": "Customize your SmartBudget experience",
+    "APPEARANCE": "Appearance",
+    "APPEARANCE_DESC": "Customize the application theme",
+    "THEME": "Theme",
+    "THEME_DESC": "Choose between light and dark theme",
+    "THEME_LIGHT": "Light theme",
+    "THEME_DARK": "Dark theme",
+    "LANGUAGE": "Language",
+    "LANGUAGE_DESC": "Change application language",
+    "PREFERRED_LANGUAGE": "Preferred language",
+    "PREFERRED_OPTIONS": "Portuguese or English",
+    "ACCOUNT": "Account",
+    "ACCOUNT_DESC": "Manage your account data",
+    "PERSONAL_INFO": "Personal information",
+    "EDIT": "Edit",
+    "FOOTER": "All rights reserved"
   }
 }

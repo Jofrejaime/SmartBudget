@@ -1,118 +1,253 @@
 <div class="categories-page">
+
   <section class="hero-grid">
+
     <article class="hero-panel hero-panel-main">
       <div class="hero-topline">
+
         <div class="hero-copy">
-          <p class="eyebrow">Gestao de categorias</p>
-          <h2>Gerenciamento de Categorias</h2>
-          <p>Organize os fluxos financeiros com categorias claras e leitura rapida.</p>
+          <p class="eyebrow">Gestão de categorias</p>
+
+          <h2>As suas categorias financeiras</h2>
+
+          <p>
+            Organize receitas e despesas com categorias privadas,
+            simples e personalizáveis.
+          </p>
         </div>
 
-        <button type="button" class="hero-action" (click)="openCreateModal()">
+        <button
+          type="button"
+          class="hero-action"
+          (click)="openCreateModal()"
+        >
           <span class="material-symbols-outlined">add</span>
           Nova Categoria
         </button>
+
       </div>
 
       <div class="hero-statline">
+
         <div class="stat-mini">
-          <span class="stat-mini-label">Categorias ativas</span>
+          <span class="stat-mini-label">Ativas</span>
           <strong>{{ activeCategories.length }}</strong>
         </div>
+
         <div class="stat-mini">
           <span class="stat-mini-label">Despesas</span>
           <strong>{{ expenseCategories.length }}</strong>
         </div>
+
         <div class="stat-mini">
           <span class="stat-mini-label">Receitas</span>
           <strong>{{ incomeCategories.length }}</strong>
         </div>
+
+        <div class="stat-mini">
+          <span class="stat-mini-label">Ambas</span>
+          <strong>{{ bothCategories.length }}</strong>
+        </div>
+
       </div>
     </article>
 
     <article class="hero-panel hero-panel-insight">
+
       <div>
-        <span class="material-symbols-outlined insight-icon">insights</span>
-        <p class="eyebrow inverse">Insight financeiro</p>
-        <h3>Categoria de foco</h3>
+        <span class="material-symbols-outlined insight-icon">
+          category
+        </span>
+
+        <p class="eyebrow inverse">
+          Organização pessoal
+        </p>
+
+        <h3>Estruture o seu fluxo financeiro</h3>
+
         <p>
-          {{ topCategory?.name || 'Sem dados ainda' }} pode ser um bom ponto para revisar o orcamento.
+          Categorias bem definidas ajudam a visualizar padrões
+          de consumo e manter maior controlo financeiro.
         </p>
       </div>
-      <a routerLink="/dashboard" class="ghost-link">Ver dashboard</a>
+
+      <a
+        routerLink="/dashboard"
+        class="ghost-link"
+      >
+        Ver dashboard
+      </a>
+
     </article>
+
   </section>
 
   <section class="section-block">
+
     <div class="section-header">
       <h3>Minhas Categorias</h3>
     </div>
 
-    <div class="cards-grid">
-      <article class="category-card" *ngFor="let category of systemCategories">
-        <div class="card-topline">
-          <div class="icon-wrap" [class.expense]="category.type === 'expense'" [class.income]="category.type === 'income'">
-            <span class="material-symbols-outlined">{{ category.icon || 'category' }}</span>
-          </div>
-          <span class="type-pill">Sistema</span>
-        </div>
+    <div
+      class="empty-state"
+      *ngIf="!activeCategories.length"
+    >
+      <span class="material-symbols-outlined">
+        category
+      </span>
 
-        <div class="card-content">
-          <h4>{{ category.name }}</h4>
-          <span class="type-pill" [class.income]="category.type === 'income'">
-            {{ category.type === 'income' ? 'Receita' : (category.type === 'expense' ? 'Despesa' : 'Ambos') }}
-          </span>
-        </div>
-      </article>
+      <h4>Nenhuma categoria encontrada</h4>
 
-      <article class="category-card user-added" *ngFor="let category of userAddedCategories">
-        <div class="card-topline">
-          <div class="icon-wrap" [class.expense]="category.type === 'expense'" [class.income]="category.type === 'income'">
-            <span class="material-symbols-outlined">{{ category.icon || 'category' }}</span>
-          </div>
-          <button type="button" class="remove-btn" (click)="removeCategory(category)">
-            <span class="material-symbols-outlined">close</span>
-          </button>
-        </div>
+      <p>
+        Crie categorias para começar a organizar
+        as suas movimentações financeiras.
+      </p>
 
-        <div class="card-content">
-          <h4>{{ category.name }}</h4>
-          <span class="type-pill" [class.income]="category.type === 'income'">
-            {{ category.type === 'income' ? 'Receita' : (category.type === 'expense' ? 'Despesa' : 'Ambos') }}
-          </span>
-        </div>
-      </article>
-
-      <article class="category-card add-card" role="button" tabindex="0" (click)="openCreateModal()" (keydown.enter)="openCreateModal()">
-        <span class="material-symbols-outlined">add</span>
-        <h4>Nova Categoria</h4>
-      </article>
+      <button
+        type="button"
+        class="primary-action"
+        (click)="openCreateModal()"
+      >
+        Criar primeira categoria
+      </button>
     </div>
+
+    <div
+      class="cards-grid"
+      *ngIf="activeCategories.length"
+    >
+
+      <article
+        class="category-card"
+        *ngFor="let category of activeCategories; trackBy: trackByCategory"
+      >
+
+        <div class="card-topline">
+
+          <div
+            class="icon-wrap"
+            [class.expense]="category.type === 'expense'"
+            [class.income]="category.type === 'income'"
+          >
+            <span class="material-symbols-outlined">
+              {{ category.icon || 'category' }}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            class="remove-btn"
+            (click)="removeCategory(category)"
+          >
+            <span class="material-symbols-outlined">
+              close
+            </span>
+          </button>
+
+        </div>
+
+        <div class="card-content">
+
+          <h4>{{ category.name }}</h4>
+
+          <span
+            class="type-pill"
+            [class.income]="category.type === 'income'"
+          >
+            {{
+              category.type === 'income'
+                ? 'Receita'
+                : category.type === 'expense'
+                  ? 'Despesa'
+                  : 'Ambos'
+            }}
+          </span>
+
+          <p *ngIf="category.description">
+            {{ category.description }}
+          </p>
+
+        </div>
+
+      </article>
+
+      <article
+        class="category-card add-card"
+        role="button"
+        tabindex="0"
+        (click)="openCreateModal()"
+        (keydown.enter)="openCreateModal()"
+      >
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        <h4>Nova Categoria</h4>
+
+      </article>
+
+    </div>
+
   </section>
 
-  <div class="modal-backdrop" *ngIf="showCreateModal" (click)="closeCreateModal()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
+  <div
+    class="modal-backdrop"
+    *ngIf="showCreateModal"
+    (click)="closeCreateModal()"
+  >
+
+    <div
+      class="modal-card"
+      (click)="$event.stopPropagation()"
+    >
+
       <div class="modal-header">
+
         <h3>Criar categoria</h3>
-        <button type="button" class="icon-close" (click)="closeCreateModal()">
-          <span class="material-symbols-outlined">close</span>
+
+        <button
+          type="button"
+          class="icon-close"
+          (click)="closeCreateModal()"
+        >
+          <span class="material-symbols-outlined">
+            close
+          </span>
         </button>
+
       </div>
 
       <form class="modal-form">
+
         <label>
           <span>Nome</span>
-          <input type="text" [(ngModel)]="categoryForm.name" name="name" required />
+
+          <input
+            type="text"
+            [(ngModel)]="categoryForm.name"
+            name="name"
+            required
+          />
         </label>
 
         <label>
-          <span>Icone</span>
-          <input type="text" [(ngModel)]="categoryForm.icon" name="icon" />
+          <span>Ícone</span>
+
+          <input
+            type="text"
+            [(ngModel)]="categoryForm.icon"
+            name="icon"
+          />
         </label>
 
         <label>
           <span>Tipo</span>
-          <select [(ngModel)]="categoryForm.type" name="type">
+
+          <select
+            [(ngModel)]="categoryForm.type"
+            name="type"
+          >
             <option value="expense">Despesa</option>
             <option value="income">Receita</option>
             <option value="both">Ambos</option>
@@ -120,19 +255,51 @@
         </label>
 
         <label>
-          <span>Descricao</span>
-          <textarea [(ngModel)]="categoryForm.description" name="description" rows="3"></textarea>
+          <span>Descrição</span>
+
+          <textarea
+            [(ngModel)]="categoryForm.description"
+            name="description"
+            rows="3"
+          ></textarea>
         </label>
 
-        <div class="modal-error" *ngIf="formError">{{ formError }}</div>
+        <div
+          class="modal-error"
+          *ngIf="formError"
+        >
+          {{ formError }}
+        </div>
 
         <div class="modal-actions">
-          <button type="button" class="secondary-action" (click)="closeCreateModal()">Cancelar</button>
-          <button type="button" class="primary-action" [disabled]="saving" (click)="submitCategory()">
-            {{ saving ? 'A guardar...' : 'Criar categoria' }}
+
+          <button
+            type="button"
+            class="secondary-action"
+            (click)="closeCreateModal()"
+          >
+            Cancelar
           </button>
+
+          <button
+            type="button"
+            class="primary-action"
+            [disabled]="saving"
+            (click)="submitCategory()"
+          >
+            {{
+              saving
+                ? 'A guardar...'
+                : 'Criar categoria'
+            }}
+          </button>
+
         </div>
+
       </form>
+
     </div>
+
   </div>
+
 </div>

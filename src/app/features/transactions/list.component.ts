@@ -3,81 +3,192 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+
 import { ButtonComponent } from '../../shared/components/button.component';
-import { TransactionService, Transaction } from '../../core/services/transaction.service';
-import { CategoryService } from '../../core/services/category.service';
+
+import {
+  TransactionService,
+  Transaction
+} from '../../core/services/transaction.service';
+
+import {
+  CategoryService,
+  Category
+} from '../../core/services/category.service';
 
 @Component({
   selector: 'app-transaction-list',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterLink, TranslateModule, FormsModule, ButtonComponent],
+  imports: [
+    CommonModule,
+    DatePipe,
+    RouterLink,
+    TranslateModule,
+    FormsModule,
+    ButtonComponent
+  ],
   template: `
     <div class="transactions-wrapper">
-      <!-- Header -->
+
+      <!-- HEADER -->
       <div class="transactions-header">
+
         <div>
           <h1>Transações</h1>
-          <p class="subtitle">Gerencie seus fluxos financeiros com precisão</p>
+
+          <p class="subtitle">
+            Gerencie seus fluxos financeiros com precisão
+          </p>
         </div>
-        <app-button 
-          variant="primary" 
+
+        <app-button
+          variant="primary"
           size="md"
           routerLink="/transactions/create"
         >
-          <span class="material-symbols-outlined">add</span>
+          <span class="material-symbols-outlined">
+            add
+          </span>
+
           Nova Transação
         </app-button>
+
       </div>
 
-      <!-- Filters -->
+      <!-- FILTERS -->
       <div class="filters-bar">
+
         <div class="filter-group">
+
           <label>Tipo</label>
-          <select [(ngModel)]="filterType" (ngModelChange)="onFilterChange()">
-            <option value="">Todos</option>
-            <option value="income">Receita</option>
-            <option value="expense">Despesa</option>
+
+          <select
+            [(ngModel)]="filterType"
+            (ngModelChange)="onFilterChange()"
+          >
+            <option value="">
+              Todos
+            </option>
+
+            <option value="income">
+              Receita
+            </option>
+
+            <option value="expense">
+              Despesa
+            </option>
+
           </select>
+
         </div>
+
         <div class="filter-group">
+
           <label>Categoria</label>
-          <select [(ngModel)]="filterCategory" (ngModelChange)="onFilterChange()">
-            <option value="">Todas</option>
-            <option *ngFor="let cat of categories" [value]="cat.id">
+
+          <select
+            [(ngModel)]="filterCategory"
+            (ngModelChange)="onFilterChange()"
+          >
+
+            <option value="">
+              Todas
+            </option>
+
+            <option
+              *ngFor="let cat of categories"
+              [value]="cat.id"
+            >
               {{ cat.name }}
             </option>
+
           </select>
+
         </div>
+
         <div class="filter-group">
+
           <label>Data Início</label>
-          <input type="date" [(ngModel)]="filterStartDate" (ngModelChange)="onFilterChange()" />
+
+          <input
+            type="date"
+            [(ngModel)]="filterStartDate"
+            (ngModelChange)="onFilterChange()"
+          />
+
         </div>
+
         <div class="filter-group">
+
           <label>Data Fim</label>
-          <input type="date" [(ngModel)]="filterEndDate" (ngModelChange)="onFilterChange()" />
+
+          <input
+            type="date"
+            [(ngModel)]="filterEndDate"
+            (ngModelChange)="onFilterChange()"
+          />
+
         </div>
+
       </div>
 
-      <!-- Stats -->
-      <div class="stats-row" *ngIf="stats">
+      <!-- STATS -->
+      <div
+        class="stats-row"
+        *ngIf="stats"
+      >
+
         <div class="stat-box">
-          <p class="stat-label">Total</p>
-          <p class="stat-value">{{ stats.total | number: '1.2-2' }} Kz</p>
+
+          <p class="stat-label">
+            Total
+          </p>
+
+          <p class="stat-value">
+            {{ stats.total | number:'1.2-2' }} Kz
+          </p>
+
         </div>
+
         <div class="stat-box income">
-          <p class="stat-label">Receita</p>
-          <p class="stat-value">{{ stats.income | number: '1.2-2' }} Kz</p>
+
+          <p class="stat-label">
+            Receita
+          </p>
+
+          <p class="stat-value">
+            {{ stats.income | number:'1.2-2' }} Kz
+          </p>
+
         </div>
+
         <div class="stat-box expense">
-          <p class="stat-label">Despesa</p>
-          <p class="stat-value">{{ stats.expense | number: '1.2-2' }} Kz</p>
+
+          <p class="stat-label">
+            Despesa
+          </p>
+
+          <p class="stat-value">
+            {{ stats.expense | number:'1.2-2' }} Kz
+          </p>
+
         </div>
+
       </div>
 
-      <!-- Transactions Table -->
-      <div class="table-container" *ngIf="!loading">
-        <table class="transactions-table" *ngIf="transactions.length > 0">
+      <!-- TABLE -->
+      <div
+        class="table-container"
+        *ngIf="!loading"
+      >
+
+        <table
+          class="transactions-table"
+          *ngIf="transactions.length > 0"
+        >
+
           <thead>
+
             <tr>
               <th>Data</th>
               <th>Descrição</th>
@@ -85,76 +196,191 @@ import { CategoryService } from '../../core/services/category.service';
               <th class="text-right">Valor</th>
               <th class="text-right">Ações</th>
             </tr>
+
           </thead>
+
           <tbody>
-            <tr *ngFor="let txn of transactions" [class.income]="txn.type === 'income'">
-              <td class="text-muted">{{ txn.date | date: 'dd/MM/yyyy' }}</td>
+
+            <tr
+              *ngFor="let txn of transactions"
+              [class.income-row]="txn.type === 'income'"
+            >
+
+              <td class="text-muted">
+                {{ txn.date | date:'dd/MM/yyyy' }}
+              </td>
+
               <td>
+
                 <div class="transaction-cell">
-                  <span class="material-symbols-outlined icon" [ngClass]="txn.type">
-                    {{ txn.type === 'income' ? 'trending_up' : 'trending_down' }}
+
+                  <span
+                    class="material-symbols-outlined icon"
+                    [ngClass]="txn.type"
+                  >
+                    {{
+                      txn.type === 'income'
+                        ? 'trending_up'
+                        : 'trending_down'
+                    }}
                   </span>
+
                   <div>
-                    <p class="name">{{ txn.description }}</p>
-                    <p class="notes">{{ txn.notes }}</p>
+
+                    <p class="name">
+                      {{ txn.description }}
+                    </p>
+
+                    <p
+                      class="notes"
+                      *ngIf="txn.notes"
+                    >
+                      {{ txn.notes }}
+                    </p>
+
                   </div>
+
                 </div>
+
               </td>
+
               <td>
-                <span class="badge">{{ getCategoryName(txn.category_id) }}</span>
+
+                <span class="badge">
+                  {{ getCategoryName(txn.category_id) }}
+                </span>
+
               </td>
-              <td class="text-right" [ngClass]="txn.type">
-                {{ (txn.type === 'income' ? '+' : '-') }} {{ txn.amount | number: '1.2-2' }} Kz
+
+              <td
+                class="text-right"
+                [ngClass]="txn.type"
+              >
+
+                {{
+                  txn.type === 'income'
+                    ? '+'
+                    : '-'
+                }}
+
+                {{ txn.amount | number:'1.2-2' }} Kz
+
               </td>
+
               <td class="text-right">
+
                 <div class="action-buttons">
-                  <button class="btn-icon" [routerLink]="['/transactions/edit', txn.id]" title="Editar">
-                    <span class="material-symbols-outlined">edit</span>
+
+                  <button
+                    class="btn-icon"
+                    [routerLink]="[
+                      '/transactions/edit',
+                      txn.id
+                    ]"
+                    title="Editar"
+                  >
+                    <span class="material-symbols-outlined">
+                      edit
+                    </span>
                   </button>
-                  <button class="btn-icon danger" (click)="deleteTransaction(txn.id!)" title="Deletar">
-                    <span class="material-symbols-outlined">delete</span>
+
+                  <button
+                    class="btn-icon danger"
+                    (click)="deleteTransaction(txn.id!)"
+                    title="Deletar"
+                  >
+                    <span class="material-symbols-outlined">
+                      delete
+                    </span>
                   </button>
+
                 </div>
+
               </td>
+
             </tr>
+
           </tbody>
+
         </table>
 
-        <!-- Empty State -->
-        <div class="empty-state" *ngIf="transactions.length === 0">
-          <span class="material-symbols-outlined">receipt_long</span>
-          <h3>Nenhuma transação</h3>
-          <p>Comece criando sua primeira transação</p>
-          <app-button variant="primary" routerLink="/transactions/create">
+        <!-- EMPTY -->
+        <div
+          class="empty-state"
+          *ngIf="transactions.length === 0"
+        >
+
+          <span class="material-symbols-outlined">
+            receipt_long
+          </span>
+
+          <h3>
+            Nenhuma transação
+          </h3>
+
+          <p>
+            Comece criando sua primeira transação
+          </p>
+
+          <app-button
+            variant="primary"
+            routerLink="/transactions/create"
+          >
             Nova Transação
           </app-button>
+
         </div>
+
       </div>
 
-      <!-- Loading State -->
-      <div class="loading-state" *ngIf="loading">
-        <span class="material-symbols-outlined spin">settings</span>
-        <p>Carregando transações...</p>
+      <!-- LOADING -->
+      <div
+        class="loading-state"
+        *ngIf="loading"
+      >
+
+        <span class="material-symbols-outlined spin">
+          settings
+        </span>
+
+        <p>
+          Carregando transações...
+        </p>
+
       </div>
 
-      <!-- Pagination -->
-      <div class="pagination" *ngIf="transactions.length > 0">
-        <button 
+      <!-- PAGINATION -->
+      <div
+        class="pagination"
+        *ngIf="transactions.length > 0"
+      >
+
+        <button
+          class="btn-pagination"
           [disabled]="currentPage <= 1"
           (click)="previousPage()"
-          class="btn-pagination"
         >
-          <span class="material-symbols-outlined">chevron_left</span>
+          <span class="material-symbols-outlined">
+            chevron_left
+          </span>
         </button>
-        <span class="page-info">Página {{ currentPage }} de {{ totalPages }}</span>
-        <button 
+
+        <span class="page-info">
+          Página {{ currentPage }} de {{ totalPages }}
+        </span>
+
+        <button
+          class="btn-pagination"
           [disabled]="currentPage >= totalPages"
           (click)="nextPage()"
-          class="btn-pagination"
         >
-          <span class="material-symbols-outlined">chevron_right</span>
+          <span class="material-symbols-outlined">
+            chevron_right
+          </span>
         </button>
+
       </div>
+
     </div>
   `,
   styles: [`
@@ -164,7 +390,6 @@ import { CategoryService } from '../../core/services/category.service';
       gap: var(--sb-spacing-2xl);
     }
 
-    /* ============ HEADER ============ */
     .transactions-header {
       display: flex;
       justify-content: space-between;
@@ -184,7 +409,6 @@ import { CategoryService } from '../../core/services/category.service';
       font-size: 14px;
     }
 
-    /* ============ FILTERS ============ */
     .filters-bar {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -218,7 +442,6 @@ import { CategoryService } from '../../core/services/category.service';
       color: var(--sb-text1);
     }
 
-    /* ============ STATS ============ */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -264,7 +487,6 @@ import { CategoryService } from '../../core/services/category.service';
       color: var(--sb-danger);
     }
 
-    /* ============ TABLE ============ */
     .table-container {
       background: var(--sb-surface);
       border: 1px solid var(--sb-border);
@@ -301,11 +523,10 @@ import { CategoryService } from '../../core/services/category.service';
       background: var(--sb-bg);
     }
 
-    .transactions-table tr.income {
+    .income-row {
       border-left: 3px solid var(--sb-income);
     }
 
-    /* Transaction Cell */
     .transaction-cell {
       display: flex;
       gap: var(--sb-spacing-md);
@@ -342,7 +563,6 @@ import { CategoryService } from '../../core/services/category.service';
       color: var(--sb-text2);
     }
 
-    /* Badge */
     .badge {
       display: inline-block;
       padding: var(--sb-spacing-xs) var(--sb-spacing-sm);
@@ -369,7 +589,6 @@ import { CategoryService } from '../../core/services/category.service';
       color: var(--sb-danger);
     }
 
-    /* Action Buttons */
     .action-buttons {
       display: flex;
       gap: var(--sb-spacing-sm);
@@ -403,7 +622,6 @@ import { CategoryService } from '../../core/services/category.service';
       font-size: 18px;
     }
 
-    /* ============ EMPTY STATE ============ */
     .empty-state {
       display: flex;
       flex-direction: column;
@@ -432,7 +650,6 @@ import { CategoryService } from '../../core/services/category.service';
       color: var(--sb-text2);
     }
 
-    /* ============ LOADING ============ */
     .loading-state {
       display: flex;
       flex-direction: column;
@@ -442,18 +659,22 @@ import { CategoryService } from '../../core/services/category.service';
       color: var(--sb-text2);
     }
 
-    .loading-state .material-symbols-outlined {
+    .spin {
+      animation: spin 2s linear infinite;
       font-size: 48px;
       margin-bottom: var(--sb-spacing-lg);
-      animation: spin 2s linear infinite;
     }
 
     @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
-    /* ============ PAGINATION ============ */
     .pagination {
       display: flex;
       justify-content: center;
@@ -463,7 +684,6 @@ import { CategoryService } from '../../core/services/category.service';
       background: var(--sb-surface);
       border: 1px solid var(--sb-border);
       border-radius: var(--sb-radius-lg);
-      margin-top: var(--sb-spacing-lg);
     }
 
     .btn-pagination {
@@ -495,18 +715,14 @@ import { CategoryService } from '../../core/services/category.service';
       font-weight: 500;
     }
 
-    /* ============ RESPONSIVE ============ */
     @media (max-width: 768px) {
+
       .transactions-header {
         flex-direction: column;
       }
 
       .filters-bar {
         grid-template-columns: 1fr;
-      }
-
-      .transactions-table {
-        font-size: 12px;
       }
 
       .transactions-table th,
@@ -521,18 +737,21 @@ import { CategoryService } from '../../core/services/category.service';
   `]
 })
 export class TransactionListComponent implements OnInit {
+
   transactions: Transaction[] = [];
-  categories: any[] = [];
+  categories: Category[] = [];
+
   loading = true;
+
   currentPage = 1;
   totalPages = 1;
   limit = 20;
-  
+
   filterType = '';
   filterCategory = '';
   filterStartDate = '';
   filterEndDate = '';
-  
+
   stats: any = null;
 
   constructor(
@@ -546,51 +765,114 @@ export class TransactionListComponent implements OnInit {
   }
 
   loadCategories(): void {
-    this.categories = this.categoryService.getCached();
-    if (this.categories.length === 0) {
-      this.categoryService.getAll().subscribe();
-    }
+
+    this.categoryService.getAll()
+      .subscribe({
+
+        next: () => {
+
+          this.categories =
+            this.categoryService.getCategories();
+        },
+
+        error: () => {
+
+          this.categories =
+            this.categoryService.getCategories();
+        }
+      });
   }
 
   loadTransactions(): void {
+
     this.loading = true;
-    const offset = (this.currentPage - 1) * this.limit;
+
+    const offset =
+      (this.currentPage - 1) * this.limit;
 
     const filters: any = {
       limit: this.limit,
-      offset: offset
+      offset
     };
 
-    if (this.filterType) filters.type = this.filterType;
-    if (this.filterCategory) filters.category_id = this.filterCategory;
-    if (this.filterStartDate) filters.start = this.filterStartDate;
-    if (this.filterEndDate) filters.end = this.filterEndDate;
+    if (this.filterType) {
+      filters.type = this.filterType;
+    }
 
-    this.transactionService.list(filters).subscribe({
-      next: (response) => {
-        if (response.success && response.data) {
-          this.transactions = response.data.transactions;
-          const { total_count } = response.data.pagination;
-          this.totalPages = Math.ceil(total_count / this.limit);
-          this.calculateStats();
+    if (this.filterCategory) {
+      filters.category_id = this.filterCategory;
+    }
+
+    if (this.filterStartDate) {
+      filters.start = this.filterStartDate;
+    }
+
+    if (this.filterEndDate) {
+      filters.end = this.filterEndDate;
+    }
+
+    this.transactionService
+      .list(filters)
+      .subscribe({
+
+        next: (response: any) => {
+
+          if (
+            response.success &&
+            response.data
+          ) {
+
+            this.transactions =
+              response.data.transactions || [];
+
+            const pagination =
+              response.data.pagination;
+
+            this.totalPages =
+              pagination?.total_pages || 1;
+
+            this.currentPage =
+              pagination?.current_page || 1;
+
+            this.calculateStats();
+          }
+
+          this.loading = false;
+        },
+
+        error: (err: any) => {
+
+          console.error(
+            'Erro ao carregar transações:',
+            err
+          );
+
+          this.loading = false;
         }
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading transactions:', err);
-        this.loading = false;
-      }
-    });
+      });
   }
 
   calculateStats(): void {
-    const income = this.transactions
-      .filter(t => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
-    
-    const expense = this.transactions
-      .filter(t => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+
+    const income =
+      this.transactions
+        .filter(
+          (t) => t.type === 'income'
+        )
+        .reduce(
+          (sum, t) => sum + Number(t.amount),
+          0
+        );
+
+    const expense =
+      this.transactions
+        .filter(
+          (t) => t.type === 'expense'
+        )
+        .reduce(
+          (sum, t) => sum + Number(t.amount),
+          0
+        );
 
     this.stats = {
       income,
@@ -600,37 +882,76 @@ export class TransactionListComponent implements OnInit {
   }
 
   onFilterChange(): void {
+
     this.currentPage = 1;
+
     this.loadTransactions();
   }
 
-  getCategoryName(categoryId: number): string {
-    const category = this.categories.find(c => c.id === categoryId);
-    return category?.name || 'Sem categoria';
+  getCategoryName(
+    categoryId: number
+  ): string {
+
+    const category =
+      this.categories.find(
+        (c) => c.id === categoryId
+      );
+
+    return category?.name ||
+      'Sem categoria';
   }
 
   deleteTransaction(id: number): void {
-    if (confirm('Tem certeza que deseja deletar esta transação?')) {
-      this.transactionService.delete(id).subscribe({
+
+    const confirmed = confirm(
+      'Tem certeza que deseja deletar esta transação?'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.transactionService
+      .delete(id)
+      .subscribe({
+
         next: () => {
+
           this.loadTransactions();
         },
-        error: (err) => console.error('Error deleting transaction:', err)
+
+        error: (err: any) => {
+
+          console.error(
+            'Erro ao deletar transação:',
+            err
+          );
+        }
       });
-    }
   }
 
   previousPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.loadTransactions();
+
+    if (this.currentPage <= 1) {
+      return;
     }
+
+    this.currentPage--;
+
+    this.loadTransactions();
   }
 
   nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.loadTransactions();
+
+    if (
+      this.currentPage >=
+      this.totalPages
+    ) {
+      return;
     }
+
+    this.currentPage++;
+
+    this.loadTransactions();
   }
 }

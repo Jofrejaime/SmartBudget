@@ -1,381 +1,533 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+
 import { DashboardService } from '../../core/services/dashboard.service';
+import {
+  TransactionService,
+  Transaction
+} from '../../core/services/transaction.service';
 
 interface DashboardSummary {
+  total_balance: number;
+
   total_income: number;
-  total_expenses: number;
-  balance: number;
-  expenses_by_category?: { [key: string]: number };
+  total_expense: number;
+
+  monthly_income: number;
+  monthly_expense: number;
+  monthly_balance: number;
+
+  month: string;
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, RouterLink],
+  imports: [
+    CommonModule,
+    DecimalPipe,
+    DatePipe,
+    RouterLink
+  ],
   template: `
     <div class="dashboard-shell">
+
+      <!-- Loading -->
       <div class="loading-badge" *ngIf="isLoading">
-        <span class="material-symbols-outlined">settings</span>
-        A atualizar dados
+        <span class="material-symbols-outlined spin">settings</span>
+        A carregar dashboard...
       </div>
 
+      <!-- HERO -->
       <section class="hero-grid">
+
         <div class="hero-card hero-card-main">
+
           <div class="hero-topline">
+
             <div>
               <p class="eyebrow">Resumo financeiro</p>
-              <h2 class="page-title">Dashboard Financeiro</h2>
-              <p class="page-subtitle">Acompanhe saldo, entradas, saídas e distribuição por categoria num único lugar.</p>
+
+              <h2 class="page-title">
+                Dashboard Financeiro
+              </h2>
+
+              <p class="page-subtitle">
+                Controle completo das suas finanças.
+              </p>
             </div>
-            <a routerLink="/transactions/create" class="hero-action">
+
+            <a
+              routerLink="/transactions/create"
+              class="hero-action"
+            >
               <span class="material-symbols-outlined">add</span>
               Nova Transação
             </a>
+
           </div>
 
+          <!-- TOTAL BALANCE -->
           <div class="balance-block">
-            <p class="balance-label">Saldo total</p>
-            <div class="balance-row">
-              <span class="currency">Kz</span>
-              <span class="balance-value">{{ summary.balance | number: '1.2-2' }}</span>
+
+            <p class="balance-label">
+              Saldo Total
+            </p>
+
+            <div
+              class="balance-value"
+              [class.positive]="summary.total_balance >= 0"
+              [class.negative]="summary.total_balance < 0"
+            >
+              {{ summary.total_balance | number:'1.2-2' }} Kz
             </div>
+
             <div class="balance-meta">
-              <span class="meta-pill income-pill">
-                <span class="material-symbols-outlined">trending_up</span>
-                Receita {{ summary.total_income | number: '1.2-2' }} Kz
-              </span>
-              <span class="meta-pill expense-pill">
-                <span class="material-symbols-outlined">trending_down</span>
-                Despesa {{ summary.total_expenses | number: '1.2-2' }} Kz
-              </span>
+
+              <div class="meta-pill income-pill">
+                <span class="material-symbols-outlined">
+                  trending_up
+                </span>
+
+                Receita:
+                {{ summary.total_income | number:'1.2-2' }} Kz
+              </div>
+
+              <div class="meta-pill expense-pill">
+                <span class="material-symbols-outlined">
+                  trending_down
+                </span>
+
+                Despesa:
+                {{ summary.total_expense | number:'1.2-2' }} Kz
+              </div>
+
             </div>
+
           </div>
+
         </div>
 
+        <!-- MONTHLY -->
         <div class="hero-card hero-card-insight">
-          <span class="material-symbols-outlined insight-icon">insights</span>
-          <p class="eyebrow light">Insight financeiro</p>
-          <h3>Controlo mensal mais claro</h3>
-          <p>
-            A maior fatia das despesas está concentrada em {{ topCategory?.name || 'categorias recorrentes' }}.
-            Rever essa área pode reduzir o peso mensal.
+
+          <span class="material-symbols-outlined insight-icon">
+            calendar_month
+          </span>
+
+          <p class="eyebrow light">
+            Resumo Mensal
           </p>
-          <a routerLink="/transactions" class="ghost-link">
-            Ver transações
-            <span class="material-symbols-outlined">arrow_forward</span>
-          </a>
+
+          <h3>{{ summary.month }}</h3>
+
+          <div class="monthly-metrics">
+
+            <div class="metric">
+              <span>Receitas</span>
+
+              <strong class="income">
+                {{ summary.monthly_income | number:'1.2-2' }} Kz
+              </strong>
+            </div>
+
+            <div class="metric">
+              <span>Despesas</span>
+
+              <strong class="expense">
+                {{ summary.monthly_expense | number:'1.2-2' }} Kz
+              </strong>
+            </div>
+
+            <div class="metric">
+              <span>Saldo</span>
+
+              <strong
+                [class.income]="summary.monthly_balance >= 0"
+                [class.expense]="summary.monthly_balance < 0"
+              >
+                {{ summary.monthly_balance | number:'1.2-2' }} Kz
+              </strong>
+            </div>
+
+          </div>
+
         </div>
+
       </section>
 
+      <!-- STATS -->
       <section class="stats-grid">
-        <article class="stat-card">
-          <p class="stat-label">Entradas</p>
-          <div class="stat-value income">{{ summary.total_income | number: '1.2-2' }} Kz</div>
-          <p class="stat-caption">Receitas acumuladas no período atual</p>
-        </article>
 
         <article class="stat-card">
-          <p class="stat-label">Saídas</p>
-          <div class="stat-value expense">{{ summary.total_expenses | number: '1.2-2' }} Kz</div>
-          <p class="stat-caption">Despesas consolidadas no período atual</p>
+
+          <p class="stat-label">
+            Receita Total
+          </p>
+
+          <div class="stat-value income">
+            {{ summary.total_income | number:'1.2-2' }} Kz
+          </div>
+
+          <p class="stat-caption">
+            Total de entradas financeiras
+          </p>
+
         </article>
 
-        <article class="stat-card stat-card-action">
-          <p class="stat-label">Ação rápida</p>
-          <a routerLink="/transactions/create" class="action-link">
-            <span class="material-symbols-outlined">add_circle</span>
-            Adicionar transação
-          </a>
-          <p class="stat-caption">Registe uma nova entrada ou saída em segundos</p>
+        <article class="stat-card">
+
+          <p class="stat-label">
+            Despesa Total
+          </p>
+
+          <div class="stat-value expense">
+            {{ summary.total_expense | number:'1.2-2' }} Kz
+          </div>
+
+          <p class="stat-caption">
+            Total de saídas financeiras
+          </p>
+
         </article>
+
+        <article class="stat-card">
+
+          <p class="stat-label">
+            Saldo Mensal
+          </p>
+
+          <div
+            class="stat-value"
+            [class.income]="summary.monthly_balance >= 0"
+            [class.expense]="summary.monthly_balance < 0"
+          >
+            {{ summary.monthly_balance | number:'1.2-2' }} Kz
+          </div>
+
+          <p class="stat-caption">
+            Resultado financeiro do mês atual
+          </p>
+
+        </article>
+
       </section>
 
-      <section class="content-grid">
-        <article class="panel panel-large">
-          <div class="panel-header">
-            <div>
-              <p class="eyebrow">Distribuição mensal</p>
-              <h3>Despesas por categoria</h3>
-            </div>
-            <span class="panel-total">{{ summary.total_expenses | number: '1.2-2' }} Kz</span>
-          </div>
+      <!-- RECENT TRANSACTIONS -->
+      <section class="transactions-panel">
 
-          <div class="category-list" *ngIf="getCategoryArray().length > 0; else emptyCategories">
-            <div class="category-item" *ngFor="let cat of getCategoryArray(); let isLast = last">
-              <div class="category-row">
-                <div>
-                  <p class="category-name">{{ cat.name }}</p>
-                  <p class="category-meta">{{ getCategoryTransactionCount(cat.name) }} transações</p>
-                </div>
-                <span class="category-amount">{{ cat.amount | number: '1.2-2' }} Kz</span>
-              </div>
-              <div class="progress-track">
-                <div class="progress-fill" [style.width.%]="getCategoryPercentage(cat.amount)"></div>
-              </div>
-            </div>
-          </div>
-
-          <ng-template #emptyCategories>
-            <div class="empty-panel">
-              <span class="material-symbols-outlined">category</span>
-              <p>Sem categorias registadas para este período.</p>
-            </div>
-          </ng-template>
-        </article>
-
-        <article class="panel panel-side">
-          <div class="panel-header compact">
-            <div>
-              <p class="eyebrow">Resumo rápido</p>
-              <h3>Métricas principais</h3>
-            </div>
-          </div>
-
-          <div class="summary-stack">
-            <div class="summary-row">
-              <span>Maior categoria</span>
-              <strong>{{ topCategory?.name || 'N/D' }}</strong>
-            </div>
-            <div class="summary-row">
-              <span>Percentual</span>
-              <strong>{{ topCategory ? getCategoryPercentage(topCategory.amount) : 0 | number: '1.0-0' }}%</strong>
-            </div>
-            <div class="summary-row">
-              <span>Saldo líquido</span>
-              <strong>{{ summary.balance | number: '1.2-2' }} Kz</strong>
-            </div>
-          </div>
-
-          <div class="mini-card">
-            <span class="material-symbols-outlined">notifications</span>
-            <div>
-              <p>Verifique a categoria com maior peso.</p>
-              <a routerLink="/transactions" class="mini-link">Abrir histórico</a>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section class="panel transactions-panel">
         <div class="panel-header">
+
           <div>
-            <p class="eyebrow">Movimento recente</p>
-            <h3>Transações recentes</h3>
+            <p class="eyebrow">Movimentos recentes</p>
+
+            <h3>Últimas Transações</h3>
           </div>
-          <a routerLink="/transactions" class="panel-link">Ver tudo</a>
+
+          <a
+            routerLink="/transactions"
+            class="panel-link"
+          >
+            Ver tudo
+          </a>
+
         </div>
 
-        <div class="transactions-table">
+        <!-- EMPTY -->
+        <div
+          class="empty-state"
+          *ngIf="recentTransactions.length === 0"
+        >
+          <span class="material-symbols-outlined">
+            receipt_long
+          </span>
+
+          <p>Nenhuma transação encontrada.</p>
+        </div>
+
+        <!-- TABLE -->
+        <div
+          class="transactions-table"
+          *ngIf="recentTransactions.length > 0"
+        >
+
           <div class="transactions-head">
             <span>Data</span>
             <span>Descrição</span>
-            <span>Categoria</span>
+            <span>Tipo</span>
             <span class="align-right">Valor</span>
           </div>
 
-          <div class="transaction-row" *ngFor="let txn of recentTransactions">
-            <div class="txn-date">{{ txn.date }}</div>
-            <div class="txn-desc">
-              <span class="txn-icon" [class.expense]="txn.type === 'expense'" [class.income]="txn.type === 'income'">
-                <span class="material-symbols-outlined">{{ txn.icon }}</span>
-              </span>
-              <div>
-                <p class="txn-title">{{ txn.title }}</p>
-                <p class="txn-subtitle">{{ txn.subtitle }}</p>
-              </div>
-            </div>
-            <div class="txn-category">
-              <span class="txn-badge">{{ txn.category }}</span>
-            </div>
-            <div class="txn-amount" [class.income]="txn.type === 'income'" [class.expense]="txn.type === 'expense'">
-              {{ txn.sign }} {{ txn.amount | number: '1.2-2' }} Kz
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+          <div
+            class="transaction-row"
+            *ngFor="let txn of recentTransactions"
+          >
 
+            <div class="txn-date">
+              {{ txn.date | date:'dd/MM/yyyy' }}
+            </div>
+
+            <div class="txn-desc">
+
+              <span
+                class="txn-icon"
+                [class.expense]="txn.type === 'expense'"
+                [class.income]="txn.type === 'income'"
+              >
+                <span class="material-symbols-outlined">
+
+                  {{
+                    txn.type === 'income'
+                      ? 'trending_up'
+                      : 'trending_down'
+                  }}
+
+                </span>
+              </span>
+
+              <div>
+
+                <p class="txn-title">
+                  {{ txn.description }}
+                </p>
+
+                <p class="txn-subtitle">
+                  {{ txn.notes || 'Sem observações' }}
+                </p>
+
+              </div>
+
+            </div>
+
+            <div>
+              <span
+                class="txn-badge"
+                [class.income]="txn.type === 'income'"
+                [class.expense]="txn.type === 'expense'"
+              >
+                {{
+                  txn.type === 'income'
+                    ? 'Receita'
+                    : 'Despesa'
+                }}
+              </span>
+            </div>
+
+            <div
+              class="txn-amount"
+              [class.income]="txn.type === 'income'"
+              [class.expense]="txn.type === 'expense'"
+            >
+              {{
+                txn.type === 'income'
+                  ? '+'
+                  : '-'
+              }}
+
+              {{ txn.amount | number:'1.2-2' }} Kz
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
   `,
   styles: [`
     .dashboard-shell {
       display: flex;
       flex-direction: column;
       gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
     }
 
     .loading-badge {
-      align-self: flex-start;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 12px;
       background: var(--sb-surface);
       border: 1px solid var(--sb-border);
       color: var(--sb-text2);
-      font-size: 13px;
       font-weight: 600;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
     }
 
-    .loading-badge .material-symbols-outlined {
-      font-size: 18px;
-      animation: spin 1.6s linear infinite;
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.85fr);
+      grid-template-columns: 2fr 1fr;
       gap: 24px;
     }
 
     .hero-card {
+      background: var(--sb-surface);
+      border: 1px solid var(--sb-border);
       border-radius: 24px;
       padding: 28px;
-      border: 1px solid var(--sb-border);
-      background: var(--sb-surface);
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
-    }
-
-    .hero-card-main {
-      background:
-        radial-gradient(circle at top right, rgba(5, 150, 105, 0.08), transparent 26%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.96));
     }
 
     .hero-topline {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 28px;
+      gap: 20px;
+      margin-bottom: 24px;
     }
 
     .eyebrow {
       font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
       text-transform: uppercase;
+      font-weight: 700;
       color: var(--sb-primary);
-      margin: 0 0 8px;
+      margin-bottom: 8px;
     }
 
     .eyebrow.light {
-      color: rgba(255, 255, 255, 0.86);
+      color: rgba(255,255,255,0.8);
     }
 
     .page-title {
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: -0.8px;
       margin: 0;
-      color: var(--sb-text);
+      font-size: 30px;
+      font-weight: 800;
     }
 
     .page-subtitle {
-      margin: 10px 0 0;
-      max-width: 720px;
+      margin-top: 10px;
       color: var(--sb-text2);
-      font-size: 15px;
-      line-height: 1.6;
     }
 
-    .hero-action,
-    .action-link {
+    .hero-action {
       display: flex;
       align-items: center;
       gap: 8px;
-      justify-content: center;
-      min-height: 44px;
-      padding: 0 16px;
-      border-radius: 14px;
       background: var(--sb-primary);
-      color: #fff;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 14px;
       text-decoration: none;
-      font-size: 14px;
       font-weight: 600;
-      transition: all 0.15s;
-      white-space: nowrap;
     }
 
-    .hero-action:hover,
-    .action-link:hover {
-      background: #059669;
-      color: white;
-      transform: translateY(-1px);
+    .balance-label {
+      color: var(--sb-text2);
+      margin-bottom: 10px;
+    }
+
+    .balance-value {
+      font-size: 42px;
+      font-weight: 800;
+    }
+
+    .balance-value.positive {
+      color: var(--sb-income);
+    }
+
+    .balance-value.negative {
+      color: var(--sb-danger);
+    }
+
+    .balance-meta {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .meta-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .income-pill {
+      background: rgba(16,185,129,0.12);
+      color: var(--sb-income);
+    }
+
+    .expense-pill {
+      background: rgba(239,68,68,0.12);
+      color: var(--sb-danger);
     }
 
     .hero-card-insight {
-      background: linear-gradient(135deg, var(--sb-primary) 0%, var(--sb-primary-dark) 100%);
+      background: linear-gradient(
+        135deg,
+        var(--sb-primary),
+        var(--sb-primary-dark)
+      );
+
       color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
     }
 
     .insight-icon {
-      font-size: 40px;
+      font-size: 42px;
+      margin-bottom: 20px;
     }
 
-    .hero-card-insight h3 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-    }
-
-    .hero-card-insight p {
-      margin: 0;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .ghost-link {
+    .monthly-metrics {
       display: flex;
       flex-direction: column;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .metric {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      width: fit-content;
+      justify-content: space-between;
+    }
+
+    .metric strong.income {
+      color: #bbf7d0;
+    }
+
+    .metric strong.expense {
+      color: #fecaca;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
     }
 
     .stat-card {
       background: var(--sb-surface);
       border: 1px solid var(--sb-border);
       border-radius: 20px;
-      padding: 22px;
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
+      padding: 24px;
     }
 
     .stat-label {
-      margin: 0 0 10px;
       color: var(--sb-text2);
-      font-size: 12px;
-      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
     }
 
     .stat-value {
-      font-family: var(--sb-font-display);
       font-size: 30px;
-      font-weight: 700;
-      letter-spacing: -0.8px;
-      margin-bottom: 8px;
+      font-weight: 800;
     }
 
     .stat-value.income {
@@ -383,207 +535,48 @@ interface DashboardSummary {
     }
 
     .stat-value.expense {
-      color: var(--sb-expense);
+      color: var(--sb-danger);
     }
 
-    .stat-caption {
-      margin: 0;
-      color: var(--sb-text2);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .stat-card-action {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .action-link {
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
-      gap: 24px;
-      align-items: start;
-    }
-
-    .panel {
+    .transactions-panel {
       background: var(--sb-surface);
       border: 1px solid var(--sb-border);
       border-radius: 24px;
       padding: 24px;
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.04);
-    }
-
-    .panel-large {
-      min-height: 100%;
-    }
-
-    .panel-side {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
     }
 
     .panel-header {
       display: flex;
-      align-items: flex-start;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
+      margin-bottom: 24px;
     }
 
-    .panel-header.compact {
-      margin-bottom: 0;
-    }
-
-    .panel-header h3 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-    }
-
-    .panel-total,
-    .panel-link,
-    .mini-link {
+    .panel-link {
       color: var(--sb-primary);
-      font-weight: 600;
       text-decoration: none;
-      font-size: 14px;
-    }
-
-    .category-list {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .category-item {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .category-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .category-name {
-      margin: 0;
-      font-weight: 600;
-      color: var(--sb-text);
-    }
-
-    .category-meta {
-      margin: 4px 0 0;
-      font-size: 12px;
-      color: var(--sb-text2);
-    }
-
-    .category-amount {
-      font-family: var(--sb-font-display);
       font-weight: 700;
-      color: var(--sb-text);
-      white-space: nowrap;
-    }
-
-    .progress-track {
-      height: 10px;
-      background: var(--sb-surface2);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--sb-primary), var(--sb-primary-mid));
-    }
-
-    .summary-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      padding: 18px;
-      background: var(--sb-surface2);
-      border-radius: 18px;
-    }
-
-    .summary-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      font-size: 14px;
-      color: var(--sb-text2);
-    }
-
-    .summary-row strong {
-      color: var(--sb-text);
-      font-family: var(--sb-font-display);
-      font-size: 15px;
-    }
-
-    .mini-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 18px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--sb-primary-light), #fff);
-      border: 1px solid rgba(5, 150, 105, 0.15);
-    }
-
-    .mini-card .material-symbols-outlined {
-      color: var(--sb-primary);
-      font-size: 24px;
-      margin-top: 2px;
-    }
-
-    .mini-card p {
-      margin: 0 0 6px;
-      color: var(--sb-text);
-      font-weight: 500;
-      line-height: 1.5;
-    }
-
-    .transactions-panel {
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .transactions-panel .panel-header {
-      padding: 24px 24px 0;
-    }
-
-    .transactions-table {
-      padding: 0 24px 24px;
     }
 
     .transactions-head,
     .transaction-row {
       display: grid;
-      grid-template-columns: 120px minmax(220px, 1fr) 170px 160px;
+      grid-template-columns:
+        120px
+        1fr
+        140px
+        160px;
+
       gap: 16px;
       align-items: center;
     }
 
     .transactions-head {
-      padding: 14px 0;
-      color: var(--sb-text2);
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      padding-bottom: 14px;
       border-bottom: 1px solid var(--sb-border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sb-text2);
+      text-transform: uppercase;
     }
 
     .transaction-row {
@@ -591,71 +584,64 @@ interface DashboardSummary {
       border-bottom: 1px solid var(--sb-border);
     }
 
-    .transaction-row:last-child {
-      border-bottom: none;
-    }
-
-    .txn-date {
-      font-size: 13px;
-      color: var(--sb-text2);
-      font-weight: 500;
-    }
-
     .txn-desc {
       display: flex;
       align-items: center;
       gap: 14px;
-      min-width: 0;
     }
 
     .txn-icon {
       width: 42px;
       height: 42px;
-      border-radius: 14px;
-      display: inline-flex;
+      border-radius: 12px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
       background: var(--sb-primary-light);
       color: var(--sb-primary);
     }
 
+    .txn-icon.income {
+      background: rgba(16,185,129,0.12);
+      color: var(--sb-income);
+    }
+
     .txn-icon.expense {
-      background: var(--sb-danger-light);
+      background: rgba(239,68,68,0.12);
       color: var(--sb-danger);
     }
 
     .txn-title {
       margin: 0;
-      font-weight: 600;
-      color: var(--sb-text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-weight: 700;
     }
 
     .txn-subtitle {
-      margin: 4px 0 0;
-      font-size: 12px;
+      margin-top: 4px;
       color: var(--sb-text2);
+      font-size: 12px;
     }
 
     .txn-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
+      padding: 6px 12px;
       border-radius: 999px;
-      background: var(--sb-surface2);
-      color: var(--sb-text2);
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
+    }
+
+    .txn-badge.income {
+      background: rgba(16,185,129,0.12);
+      color: var(--sb-income);
+    }
+
+    .txn-badge.expense {
+      background: rgba(239,68,68,0.12);
+      color: var(--sb-danger);
     }
 
     .txn-amount {
-      font-family: var(--sb-font-display);
-      font-weight: 700;
       text-align: right;
-      white-space: nowrap;
+      font-weight: 800;
     }
 
     .txn-amount.income {
@@ -663,49 +649,29 @@ interface DashboardSummary {
     }
 
     .txn-amount.expense {
-      color: var(--sb-expense);
+      color: var(--sb-danger);
     }
 
     .align-right {
       text-align: right;
     }
 
-    .empty-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 180px;
-      border: 1px dashed var(--sb-border);
-      border-radius: 20px;
-      background: var(--sb-surface2);
-      color: var(--sb-text2);
-      gap: 12px;
+    .empty-state {
+      padding: 40px;
       text-align: center;
+      color: var(--sb-text2);
     }
 
-    .empty-panel .material-symbols-outlined {
-      font-size: 36px;
-      color: var(--sb-primary);
+    .empty-state .material-symbols-outlined {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
     }
 
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+    @media (max-width: 900px) {
 
-    @media (max-width: 768px) {
       .hero-grid,
-      .content-grid,
       .stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-topline,
-      .panel-header,
-      .category-row,
-      .transactions-head,
-      .transaction-row {
         grid-template-columns: 1fr;
       }
 
@@ -718,125 +684,89 @@ interface DashboardSummary {
       }
 
       .transaction-row {
-        gap: 10px;
+        grid-template-columns: 1fr;
       }
 
       .txn-amount {
         text-align: left;
       }
-
-      .txn-desc {
-        align-items: flex-start;
-      }
-
-      .hero-card,
-      .panel,
-      .stat-card {
-        border-radius: 20px;
-        padding: 20px;
-      }
     }
   `]
 })
 export class DashboardComponent implements OnInit {
-  summary: DashboardSummary = {
-    total_income: 0,
-    total_expenses: 0,
-    balance: 0,
-    expenses_by_category: {}
-  };
-  isLoading = true;
-  recentTransactions = [
-    {
-      date: '24 Out 2024',
-      title: 'Consultoria Tech Global',
-      subtitle: 'Fatura #8829',
-      category: 'Serviços',
-      amount: 12000,
-      sign: '+',
-      type: 'income',
-      icon: 'payments'
-    },
-    {
-      date: '22 Out 2024',
-      title: 'Amazon Web Services',
-      subtitle: 'Infraestrutura Cloud',
-      category: 'Tecnologia',
-      amount: 4350.2,
-      sign: '-',
-      type: 'expense',
-      icon: 'cloud_queue'
-    },
-    {
-      date: '20 Out 2024',
-      title: 'Dividendos Mensais',
-      subtitle: 'Fundo de Investimento',
-      category: 'Investimentos',
-      amount: 2450,
-      sign: '+',
-      type: 'income',
-      icon: 'trending_up'
-    },
-    {
-      date: '18 Out 2024',
-      title: 'Aluguel Escritório SP',
-      subtitle: 'WeWork Paulista',
-      category: 'Operacional',
-      amount: 8900,
-      sign: '-',
-      type: 'expense',
-      icon: 'apartment'
-    }
-  ];
 
-  constructor(private dashboardService: DashboardService) {}
+  summary: DashboardSummary = {
+    total_balance: 0,
+
+    total_income: 0,
+    total_expense: 0,
+
+    monthly_income: 0,
+    monthly_expense: 0,
+    monthly_balance: 0,
+
+    month: ''
+  };
+
+  recentTransactions: Transaction[] = [];
+
+  isLoading = true;
+
+  constructor(
+    private dashboardService: DashboardService,
+    private transactionService: TransactionService
+  ) {}
 
   ngOnInit(): void {
     this.loadDashboard();
+    this.loadRecentTransactions();
   }
 
   loadDashboard(): void {
+
     this.dashboardService.getSummary().subscribe({
-      next: (response: any) => {
+
+      next: (response) => {
+
         if (response.success && response.data) {
           this.summary = response.data;
         }
+
         this.isLoading = false;
       },
+
       error: (err) => {
-        console.error('Error:', err);
-        this.summary = {
-          total_income: 0,
-          total_expenses: 0,
-          balance: 0,
-          expenses_by_category: {}
-        };
+
+        console.error('Dashboard Error:', err);
+
         this.isLoading = false;
       }
+
     });
+
   }
 
-  getCategoryArray(): Array<{ name: string; amount: number }> {
-    if (!this.summary?.expenses_by_category) return [];
-    return Object.entries(this.summary.expenses_by_category)
-      .map(([name, amount]) => ({
-        name,
-        amount: amount as number
-      }))
-      .sort((left, right) => right.amount - left.amount);
-  }
+  loadRecentTransactions(): void {
 
-  getCategoryPercentage(amount: number): number {
-    if (!this.summary?.total_expenses || this.summary.total_expenses === 0) return 0;
-    return (amount / this.summary.total_expenses) * 100;
-  }
+    this.transactionService.list({
+      limit: 5,
+      offset: 0
+    }).subscribe({
 
-  getCategoryTransactionCount(categoryName: string): number {
-    return this.recentTransactions.filter((transaction) => transaction.category === categoryName).length || 1;
-  }
+      next: (response) => {
 
-  get topCategory(): { name: string; amount: number } | null {
-    const categories = this.getCategoryArray();
-    return categories.length ? categories[0] : null;
+        if (response.success && response.data) {
+          this.recentTransactions =
+            response.data.transactions;
+        }
+
+      },
+
+      error: (err) => {
+        console.error('Transactions Error:', err);
+      }
+
+    });
+
   }
 }
