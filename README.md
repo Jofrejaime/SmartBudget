@@ -1,59 +1,127 @@
-# SmartbudgetUi
+# SmartBudget UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.10.
+Um frontend moderno e leve para o SmartBudget — uma aplicação de gestão financeira pessoal.
 
-## Development server
+Sumário
+- Descrição
+- Tecnologias
+- Como executar (desenvolvimento)
+- Build e produção
+- Testes
+- Internacionalização (i18n)
+- Funcionalidades relevantes
+- Contribuindo
+- Resolução de problemas
 
-To start a local development server, run:
+Descrição
+-----------
+Este repositório contém a interface do SmartBudget construída com Angular (standalone components). O objetivo é fornecer uma experiência de utilizador limpa para gerir transações, categorias, e obter relatórios rápidos (CSV export).
+
+Tecnologias
+-----------
+- Angular 21
+- TypeScript
+- ngx-translate para i18n
+- SCSS para estilos
+- Angular CLI para build / dev server
+
+Principais funcionalidades
+-------------------------
+- Dashboard com resumo financeiro, resumo mensal e últimas transações
+- Gestão de categorias (criar, arquivar)
+- CRUD de transações
+- Exportação de relatório (CSV) a partir do Dashboard
+- Suporte a múltiplos idiomas (Português / Inglês)
+
+Pré-requisitos
+--------------
+- Node.js 18+ (recomendado)
+- npm 9+ ou yarn
+
+Instalação
+----------
+No diretório do projeto execute:
 
 ```bash
+npm install
+```
+
+Execução em desenvolvimento
+---------------------------
+Inicia um servidor de desenvolvimento com reload automático:
+
+```bash
+npm run start
+# ou
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The applicati   on will automatically reload whenever you modify any of the source files.
+Abra http://localhost:4200/ no navegador.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Build e produção
+-----------------
+Gerar build de produção:
 
 ```bash
-ng generate --help
+npm run build
+# saída em: dist/smartbudget-ui
 ```
 
-## Building
-
-To build the project run:
+Testes
+------
+Executar testes unitários (Vitest / Karma conforme configuração do projeto):
 
 ```bash
-ng build
+npm run test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Internacionalização (i18n)
+--------------------------
+O projeto usa `ngx-translate` e carrega ficheiros de tradução em `src/assets/i18n/{pt|en}.json`.
 
-## Running unit tests
+Dicas de debugging i18n
+- Verificar no browser DevTools → Network se `/assets/i18n/pt.json` é carregado.
+- Checar a chave `sb_language` no localStorage (valor `pt` ou `en`).
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Exportação de Relatório (CSV)
+----------------------------
+O Dashboard tem um botão "Exportar Relatório" que gera um CSV com:
 
-```bash
-ng test
-```
+1. Resumo Geral (saldo, receitas, despesas)
+2. Resumo Mensal (mês, receitas, despesas, saldo)
+3. Últimas transações (Data, Descrição, Tipo, Valor)
 
-## Running end-to-end tests
+O serviço responsável é `src/app/core/services/export.service.ts`.
 
-For end-to-end (e2e) testing, run:
+Configuração e variáveis de ambiente
+-----------------------------------
+O frontend comunica com a API backend via endpoints configurados no serviço. As variáveis de ambiente (URL do backend, etc.) devem ser geridas onde o ambiente de produção as suporta (por exemplo, `environment.ts` / servidor de CI).
 
-```bash
-ng e2e
-```
+Contribuição
+------------
+1. Fork do repositório
+2. Crie uma branch feature: `git checkout -b feat/minha-funcionalidade`
+3. Adicione testes quando aplicável
+4. Abra um pull request descrevendo as mudanças
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Boas práticas de commits
+- Mensagens pequenas e descritivas
+- Faça builds antes de abrir PR
 
-## Additional Resources
+Resolução de problemas comuns
+-----------------------------
+- Traduções não aparecem: valide `src/assets/i18n/*.json` (formato JSON válido) e confirme o `TranslateLoader` está apontando para `/assets/i18n/{lang}.json`.
+- Botões grandes / layout quebrado: ver `src/styles.scss` e componentes `.scss` para regras de altura/padding; rebuild necessário após alterações.
+- API do dashboard retorna vazio: validar token JWT e chamadas em Network (GET /dashboard/summary).
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Contactos
+--------
+Para dúvidas e suporte interno, abra uma issue no repositório ou contacte o responsável do projecto.
+
+Licença
+-------
+Defina aqui a licença do projecto (por exemplo MIT) ou remova esta secção se não aplicável.
+
+---
+Arquivo: [README.md](README.md)
+
